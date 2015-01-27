@@ -6,6 +6,8 @@
 		"grunt-contrib-watch": "latest",
 		"grunt-contrib-requirejs": "latest",
 		"grunt-contrib-clean": "latest",
-		"grunt-contrib-copy": "latest"
+		"grunt-contrib-copy": "latest",
+		"grunt-contrib-connect": "latest",
+		"grunt-usemin": "latest"
 	}
 }

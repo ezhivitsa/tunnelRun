@@ -11,7 +11,8 @@ module.exports = function(grunt) {
 					baseUrl: 'develop/js/modules',
 					mainConfigFile: 'develop/js/config.js',
 					out: 'develop/js/script.min.js',
-					findNestedDependencies: true
+					findNestedDependencies: true,
+					optimize: 'none'
 				}
 			}
 		},
@@ -23,7 +24,7 @@ module.exports = function(grunt) {
 			},
 			gruntfile: {
 				files: 'Gruntfile.js',
-				tasks: ['requirejs', 'compass:dev']
+				tasks: ['requirejs']
 			},
 			scripts: {
 				files: ['develop/js/*.js', 'develop/js/**/*.js', '!develop/js/script.min.js'],
@@ -68,14 +69,31 @@ module.exports = function(grunt) {
 			app: ['build'],
 			js: ['build/js/*.js'],
 			css: ['build/css/*.css']
-		}
+		},
+
+		connect: {
+            options: {
+                port: 8888,
+                // Change this to '0.0.0.0' to access the server from outside.
+                // hostname: '192.168.1.147'
+                hostname: 'localhost'
+            },
+
+            dist: {
+                options: {
+                    open: true,
+                    base: 'develop'
+                }
+            }
+        }
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.loadNpmTasks("grunt-contrib-copy");
+	grunt.loadNpmTasks("grunt-contrib-connect");
 
-	grunt.registerTask('default', ['requirejs', 'watch']);
+	grunt.registerTask('default', ['requirejs', 'connect', 'watch']);
 	grunt.registerTask('build', ['clean', 'requirejs', 'copy:build']);
 };
