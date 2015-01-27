@@ -1,0 +1,23 @@
+{
+  "name": "grunt-template",
+  "version": "0.0.0",
+  "authors": [
+    "Evgeny Potockiy <evgeny.potockiy@hiqo-solutions.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "develop/js/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.14",
+    "threejs": "*"
+  }
+}
