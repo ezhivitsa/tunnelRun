@@ -1,7 +1,10 @@
 define([
-	'three'
-], 
-	function (THREE) {
-		console.log(THREE)
+		'three',
+		'scena'
+	],
+	function(THREE, scena) {
+		console.log(THREE);
+		scena.init();
+		scena.start();
 	}
 );
