@@ -14,11 +14,11 @@ require.config({
             exports: "THREE"
         },
         projector: {
-            //exports: "THREE.Projector",
+            exports: "THREE",
             deps: ["three"]
         },
         trackballControls: {
-            exports: "THREE.TrackballControls",
+            exports: "THREE",
             deps: ["three"]
         }
     }

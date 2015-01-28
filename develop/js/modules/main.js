@@ -7,7 +7,7 @@ define([
 	function(THREE, scena, trackballControls, projector) {
 		console.log(projector);
 
-		THREE.TrackballControls = trackballControls;
+		// THREE.TrackballControls = trackballControls;
 		console.log(THREE);
 
 		scena.init();
