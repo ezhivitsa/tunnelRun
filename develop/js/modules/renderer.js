@@ -5,19 +5,19 @@ define([
 		'use strict';
 
 		function Renderer(canvasElement, width, height) {
-			this.renderer = new THREE.WebGLRenderer({
+			var this.renderer = new THREE.WebGLRenderer({
 				antialias: true
 			});
 			this.renderer.setClearColor(0xeeeeee);
 			
 			this.renderer.setSize(width, height);
-			renderer.shadowMapEnabled = true;
-			canvasElement.appendChild(renderer.domElement);
+			shadowMapEnabled = true;
+			canvasElement.appendChild(this.renderer.domElement);
 		}
 
-		Renderer.prototype.render = function () {
-			this.renderer.render(this.scene, scene.camera);
-		}
+		Renderer.prototype.get = function () {
+			return this.renderer;
+		};
 
 		return Renderer;
 	}
