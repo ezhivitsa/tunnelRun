@@ -1,16 +1,24 @@
 define([
 		'three',
-		'scena',
 		'trackballControls',
-		'projector'
+		'projector',
+
+		'scene',
+		'renderer'
 	],
-	function(THREE, scena, trackballControls, projector) {
-		console.log(projector);
+	function(THREE, TrackballControls, Projector, Scene, Renderer) {
+		THREE.TrackballControls = TrackballControls;
 
-		THREE.TrackballControls = trackballControls;
-		console.log(THREE);
+		var pageSize = {
+				width: window.innerWidth - 10,
+				height: window.innerHeight - 20
+			},
+			canvasElement = document.getElementById("WebGLCanvas");
 
-		scena.init();
-		scena.start();
+		var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
+			scene = new Scene(renderer);
+
+		Scena.init();
+		Scena.start();
 	}
 );

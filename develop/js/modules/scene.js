@@ -1,30 +1,13 @@
 define(["three"], function(THREE) {
 
-	function Scene() {
-		this.renderer = null;
-		this.scene = null;
-		this.camera = null;
-		this.control =  null;
-	}
-
-	Scene.prototype.init = function () {
-		// Init renderer and add canvas to html
-		this.renderer = new THREE.WebGLRenderer({
-			antialias: true
-		});
-		this.renderer.setClearColor(0xeeeeee);
-
-		this.page = {
-			width: window.innerWidth - 10,
-			height: window.innerHeight - 20
-		};
-
-		renderer.setSize(this.pageSize.width, this.pageSize.height);
-		renderer.shadowMapEnabled = true;
-		document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
+	function Scene (renderer) {
+		this.renderer = renderer;
 
 		// Init scene
 		this.scene = new THREE.Scene();
+	}
+
+	Scene.prototype.init = function () {
 
 		// Init camera
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -45,27 +28,11 @@ define(["three"], function(THREE) {
 		camera: null,
 		controls: null,
 		init: function() {
-			// Init renderer and add canvas to html
-			renderer = new THREE.WebGLRenderer({
-				antialias: true
-			});
-			renderer.setClearColor(0xeeeeee);
-			canvasWidth = window.innerWidth - 10;
-			canvasHeight = window.innerHeight - 20;
-			renderer.setSize(canvasWidth, canvasHeight);
-			renderer.shadowMapEnabled = true;
-			document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
-
 			// Init scene
 			this.scene = new THREE.Scene();
 
 			// Init camera
-			this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-			this.camera.position.x = 0;
-			this.camera.position.y = 0;
-			this.camera.position.z = 11;
-			this.camera.rotation.y = -Math.PI / 4;
-			this.camera.lookAt(this.scene.position);
+			
 
 			// Init controls
 			this.controls = new THREE.TrackballControls(this.camera);
