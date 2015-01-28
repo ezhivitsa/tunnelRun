@@ -1,5 +1,43 @@
 define(["three"], function(THREE) {
 
+	function Scene() {
+		this.renderer = null;
+		this.scene = null;
+		this.camera = null;
+		this.control =  null;
+	}
+
+	Scene.prototype.init = function () {
+		// Init renderer and add canvas to html
+		this.renderer = new THREE.WebGLRenderer({
+			antialias: true
+		});
+		this.renderer.setClearColor(0xeeeeee);
+
+		this.page = {
+			width: window.innerWidth - 10,
+			height: window.innerHeight - 20
+		};
+
+		renderer.setSize(this.pageSize.width, this.pageSize.height);
+		renderer.shadowMapEnabled = true;
+		document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
+
+		// Init scene
+		this.scene = new THREE.Scene();
+
+		// Init camera
+		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		this.camera.position.x = 0;
+		this.camera.position.y = 0;
+		this.camera.position.z = 11;
+		this.camera.rotation.y = -Math.PI / 4;
+		this.camera.lookAt(this.scene.position);
+
+		// Init controls
+		this.controls = new THREE.TrackballControls(this.camera);
+	};
+
 	var renderer = null;
 
 	var scene = {
@@ -27,10 +65,10 @@ define(["three"], function(THREE) {
 			this.camera.position.y = 0;
 			this.camera.position.z = 11;
 			this.camera.rotation.y = -Math.PI / 4;
-			this.camera.lookAt(scene.position);
+			this.camera.lookAt(this.scene.position);
 
 			// Init controls
-			this.controls = new THREE.TrackballControls(camera);
+			this.controls = new THREE.TrackballControls(this.camera);
 		},
 		start: function() {
 
@@ -137,7 +175,7 @@ define(["three"], function(THREE) {
 
 			// Add axes
 			var axes = new THREE.AxisHelper(50);
-			scene.add(axes);
+			this.scene.add(axes);
 
 			// Add light
 			var ambientLight = new THREE.AmbientLight(0x202020, 1);
@@ -152,9 +190,9 @@ define(["three"], function(THREE) {
 		},
 		// Rerendering function
 		render: function() {
-			scene.controls.update();
-			renderer.render(scene.scene, scene.camera);
-			requestAnimationFrame(scene.renderScene);
+			this.controls.update();
+			renderer.render(this.scene, scene.camera);
+			requestAnimationFrame(this.scene.renderScene);
 		}
 	};
 	return scene;
