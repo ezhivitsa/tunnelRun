@@ -5,7 +5,7 @@ define([
 		'use strict';
 
 		function Renderer(canvasElement, width, height) {
-			var this.renderer = new THREE.WebGLRenderer({
+			this.renderer = new THREE.WebGLRenderer({
 				antialias: true
 			});
 			this.renderer.setClearColor(0xeeeeee);

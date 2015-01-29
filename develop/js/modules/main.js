@@ -1,11 +1,14 @@
 define([
 		'three',
+		'projector',
+		'trackballControls',
 
 		'scene',
 		'renderer',
-		'camera'
+		'camera',
+		'segment'
 	],
-	function(THREE, Scene, Renderer, Camera) {
+	function(THREE, Projector, TrackballControls, Scene, Renderer, Camera, Segment) {
 		var pageSize = {
 				width: window.innerWidth - 10,
 				height: window.innerHeight - 20
@@ -18,7 +21,13 @@ define([
 
 		camera.setPosition(0, 0, 11);
 
-		scena.init();
-		scena.animate();
+		scene.init();
+
+		var NUMOFSEGMENT = 67;
+		for (var i = 0; i < NUMOFSEGMENT; i++) {
+			scene.addSegment((new Segment()).get());
+		}
+		scene.render();
+		scene.animate();
 	}
 );

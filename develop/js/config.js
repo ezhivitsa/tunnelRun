@@ -5,11 +5,15 @@ require.config({
     paths: {
         three: "../vendor/threejs/build/three",
         projector: "../lib/Projector",
-        trackballControls: "../lib/TrackballControls"
+        trackballControls: "../lib/TrackballControls",
+        stats: "../vendor/stats.js/build/stats.min"
     },
 
     // Help RequireJS load Backbone and Underscore.
     shim: {
+        stats: {
+            exports: "Stats"
+        },
         three: {
             exports: "THREE"
         },
