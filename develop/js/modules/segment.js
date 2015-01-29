@@ -53,11 +53,50 @@ define([
 			})
 		];
 
-		function Segment() {
+		var MATRIX_SIZE = 44;
+
+		function Segment () {
 			this.geometry =  new THREE.BoxGeometry( WIDTH, HEIGHT, DEPTH );
 			this.material = new THREE.MeshFaceMaterial( materials );
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
-		}
+
+			this.blockMatrix = [];
+			this.blockNumber = MATRIX_SIZE;
+		};
+
+		Segment.prototype.generateMatrix = function (diff) {
+			// diff [0, 1]
+
+			// generating abysses
+			var randNum = Math.random(),
+				abyssNum = 0,
+				sizes = [ 0, 1, 2, 3 ];
+
+			if ( 1 - 0.4*diff <= randNum && randNum < 0.2*diff ) {
+				abyssNum = 1;
+			}
+			else if ( 0.2*diff <= randNum && randNum < 0.05*diff ) {
+				abyssNum = 2;
+			}
+			else if ( 0.05*diff <= randNum && randNum <= 1 ) {
+				abyssNum = 3;
+			}
+
+			for ( var i = 0; i < abyssNum; i++ ) {
+				var randSide = sizes[Math.floor(Math.random() * sizes.length)];
+
+				for ( var j = 11*randSide; j < 11*(randSide + 1); j++ ) {
+					this.blockMatrix = 2;
+				}
+				this.blockNumber -= 10;
+			}
+
+			// generation passages
+			
+			// for ( var i = 0; i < MATRIX_SIZE; i++ ) {
+
+			// }
+		};
 
 		Segment.prototype.get = function () {
 			return this.mesh;
