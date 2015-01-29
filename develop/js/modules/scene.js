@@ -5,6 +5,8 @@ define([
 	function (THREE, Stats) {
 		'use strict';
 
+		var SPEED = 0.1;
+
 		function Scene (renderer, camera) {
 			this.renderer = renderer;
 			this.camera = camera;
@@ -55,6 +57,16 @@ define([
 			this.stats.begin();
 
 			this.controls.update();
+			// Animate 
+			for (var i = 0; i < this.segments.length; i++) {
+				// if (segments[i].position.z + step == (400 - 380)) {
+				// 	step = 0;
+				// 	console.log(segments[i].position.z);
+				// }
+				this.segments[i].position.z += Math.floor(this.segments[i].position.z + SPEED) != (402 - 380) ? SPEED : -402 + SPEED;
+			}
+
+
 			this.renderer.render(this.scene, this.camera);
 			this.stats.end();
 			requestAnimationFrame(function () {
