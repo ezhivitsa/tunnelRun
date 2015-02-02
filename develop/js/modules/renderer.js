@@ -11,7 +11,7 @@ define([
 			this.renderer.setClearColor(0xeeeeee);
 			
 			this.renderer.setSize(width, height);
-			shadowMapEnabled = true;
+			this.renderer.shadowMapEnabled = true;
 			canvasElement.appendChild(this.renderer.domElement);
 		}
 
