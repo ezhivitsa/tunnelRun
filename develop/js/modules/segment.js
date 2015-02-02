@@ -53,49 +53,76 @@ define([
 			})
 		];
 
-		var MATRIX_SIZE = 44;
+		var SIDE_LINES = 11,
+			SIDES = 4,
+			MATRIX_SIZE = SIDE_LINES * SIDES;
+
+		var PASS = 1,
+			ABYSS = 2;
 
 		function Segment () {
 			this.geometry =  new THREE.BoxGeometry( WIDTH, HEIGHT, DEPTH );
 			this.material = new THREE.MeshFaceMaterial( materials );
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
-
-			this.blockMatrix = [];
-			this.blockNumber = MATRIX_SIZE;
 		};
 
 		Segment.prototype.generateMatrix = function (diff) {
+			this.blockMatrix = [];
+			this.blockNumber = MATRIX_SIZE;
+
 			// diff [0, 1]
 
 			// generating abysses
 			var randNum = Math.random(),
 				abyssNum = 0,
-				sizes = [ 0, 1, 2, 3 ];
+				sides = [];
 
-			if ( 1 - 0.4*diff <= randNum && randNum < 0.2*diff ) {
+			for ( var i = 0; i < SIDES; i++ ) {
+				sides.push(i);
+			}
+
+			if ( 1 - 0.4*diff <= randNum && randNum < 1 - 0.2*diff ) {
 				abyssNum = 1;
 			}
-			else if ( 0.2*diff <= randNum && randNum < 0.05*diff ) {
+			else if ( 1 - 0.2*diff <= randNum && randNum < 1 - 0.05*diff ) {
 				abyssNum = 2;
 			}
-			else if ( 0.05*diff <= randNum && randNum <= 1 ) {
+			else if ( 1 - 0.05*diff <= randNum && randNum <= 1 ) {
 				abyssNum = 3;
 			}
 
 			for ( var i = 0; i < abyssNum; i++ ) {
-				var randSide = sizes[Math.floor(Math.random() * sizes.length)];
+				var sideNum = Math.floor(Math.random() * sides.length),
+					randSide = sides[sideNum];
+				sides.splice(sideNum, 1);
 
-				for ( var j = 11*randSide; j < 11*(randSide + 1); j++ ) {
-					this.blockMatrix = 2;
+				for ( var j = SIDE_LINES*randSide; j < SIDE_LINES*(randSide + 1); j++ ) {
+					this.blockMatrix = ABYSS;
 				}
-				this.blockNumber -= 10;
+				this.blockNumber -= (SIDE_LINES - 1);
 			}
 
 			// generation passages
-			
-			// for ( var i = 0; i < MATRIX_SIZE; i++ ) {
+			var passPerSide = Math.floor(SIDE_LINES*Math.pow(Math.random()*0.875 + 0.01, diff*8/3 + 1/3));
+			( !passPerSide ) && ( passPerSide = 1 );
 
-			// }
+			var matrixPositions = [];
+			for ( i = 0; i < MATRIX_SIZE; i++ ) {
+				if ( this.blockMatrix != ABYSS ) {
+					matrixPositions.push(i);
+				}
+			}
+
+			console.log(abyssNum)
+			console.log(passPerSide * (SIDES - abyssNum))
+			var randomPos = 0;
+			for ( i = 0; i < passPerSide * (SIDES - abyssNum); i++ ) {
+				var pos = Math.floor(Math.random() * matrixPositions.length);
+				randomPos = matrixPositions[pos];
+				this.blockMatrix[randomPos] = PASS;
+
+				matrixPositions.splice(pos, 1);
+			}
 		};
 
 		Segment.prototype.get = function () {

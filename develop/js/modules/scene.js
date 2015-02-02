@@ -5,7 +5,8 @@ define([
 	function (THREE, Stats) {
 		'use strict';
 
-		var SPEED = 0.1;
+		var MAX_SPEED = 30,
+			MIN_SPEED = 10;
 
 		function Scene (renderer, camera) {
 			this.renderer = renderer;
@@ -15,6 +16,9 @@ define([
 			this.scene = new THREE.Scene();	
 
 			this.segments = [];
+			this.diff = 0;
+			this.iteration = 0;
+			this.speed = MIN_SPEED;
 		};
 
 		Scene.prototype.init = function () {
@@ -41,15 +45,30 @@ define([
 
 			document.body.appendChild( this.stats.domElement );
 
-			for (var i = 0; i < this.segments.length; i++) {
-				this.segments[i].position.y = 3;
-				this.segments[i].position.z = -380 + i*6;
-				this.segments[i].receiveShadow = true;
-			}
+			//<debug>
+			var resultMatrix = [];
+			//</debug>
+
+			for (var i = 0; i < this.segments.length; i++)
+				(function (seg, diff) {
+					seg.mesh.position.y = 3;
+					seg.mesh.position.z = -380 + i*5.99;
+					seg.mesh.receiveShadow = true;
+
+					seg.generateMatrix(diff);
+					//<debug>
+					console.log(seg.blockMatrix, seg.blockMatrix.length)
+					// resultMatrix.push(seg.blockMatrix);
+					//</debug>
+				})(this.segments[i], this.diff);			
 
 			this.scene.add(this.ambientLight); 
 
 			this.scene.add(this.spotLight);
+
+			//<debug>
+			// console.log(resultMatrix);
+			//</debug>
 		};
 
 		Scene.prototype.animate = function () {
@@ -59,11 +78,27 @@ define([
 			this.controls.update();
 			// Animate 
 			for (var i = 0; i < this.segments.length; i++) {
-				// if (segments[i].position.z + step == (400 - 380)) {
-				// 	step = 0;
-				// 	console.log(segments[i].position.z);
-				// }
-				this.segments[i].position.z += Math.floor(this.segments[i].position.z + SPEED) != (402 - 380) ? SPEED : -402 + SPEED;
+				this.iteration++;
+
+				if ( this.iteration > 10000 ) {
+					( this.diff < 1 ) && ( this.diff += 0.1 );
+					( this.speed < MAX_SPEED ) && ( this.speed += 1 );
+
+					this.iteration = 0;
+				}
+
+				(function (segment, pos, speed, diff) {
+					// console.log(Math.floor(pos.z + speed), (402 - 380));
+					console.log(speed)
+
+					if ( /*Math.floor*/(pos.z + speed) < (401 - 380) ) {
+						pos.z += speed;
+					}
+					else {
+						pos.z += -401 + speed;
+						segment.generateMatrix(diff)
+					}
+				})(this.segments[i], this.segments[i].mesh.position, this.speed / 100, this.diff);
 			}
 
 
@@ -80,7 +115,12 @@ define([
 
 		Scene.prototype.addSegment = function (segment) {
 			this.segments.push(segment);
-			this.scene.add(segment);
+			this.scene.add(segment.mesh);
+		};
+
+		Scene.prototype.addHero = function (hero) {
+			this.hero = hero;
+			this.scene.add(hero.mesh);
 		};
 
 		return Scene;
