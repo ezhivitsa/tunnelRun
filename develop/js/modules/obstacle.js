@@ -15,14 +15,13 @@ define(['three'], function(THREE) {
 			color: 0x00ff00
 		});
 
-	function Obstacle(vSize, hSize, map) {
+	function Obstacle(vSize, hSize) {
 		this.vSize = vSize;
 		this.hSize = hSize;
-		this.map = map;
 		this.planeGeometry = new THREE.PlaneGeometry(this.vSize * 2, this.hSize * 2);
 	}
 
-	Obstacle.prototype.addToSegment = function(segment) {
+	Obstacle.prototype.addToSegment = function(segment, map) {
 
 		// Init vars for cycle working
 		var iteration = 0,
@@ -30,15 +29,15 @@ define(['three'], function(THREE) {
 			holder = null,
 			count = 0;
 
-		while (iteration < this.map.length) {
-			if (this.map[iteration]) {
-				if (this.map[iteration] == 2) {
+		while (iteration < map.length) {
+			if (map[iteration]) {
+				if (map[iteration] == 2) {
 					iteration += (this.vSize - 1);
 					holder = this.addPlane(Math.floor(iteration / (this.vSize - 1)), segment.position.z, "ob_" + count);
 					count++;
 					segment.add(holder);
 				} else if (blockLength != 0) {
-					holder = addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, segment.position.z, "ob_" + count);
+					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, segment.position.z, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);
@@ -48,7 +47,7 @@ define(['three'], function(THREE) {
 				if ((iteration + 1) % (this.vSize - 1) != 0) {
 					blockLength++;
 				} else {
-					holder = addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, segment.position.z, "ob_" + count);
+					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, segment.position.z, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);

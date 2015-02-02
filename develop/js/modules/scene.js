@@ -8,9 +8,10 @@ define([
 		var MAX_SPEED = 30,
 			MIN_SPEED = 10;
 
-		function Scene (renderer, camera) {
+		function Scene (renderer, camera, obstacle) {
 			this.renderer = renderer;
 			this.camera = camera;
+			this.obstacle = obstacle;
 
 			// Init scene
 			this.scene = new THREE.Scene();	
@@ -45,30 +46,17 @@ define([
 
 			document.body.appendChild( this.stats.domElement );
 
-			//<debug>
-			var resultMatrix = [];
-			//</debug>
-
 			for (var i = 0; i < this.segments.length; i++)
 				(function (seg, diff) {
 					seg.mesh.position.y = 3;
 					seg.mesh.position.z = -380 + i*5.99;
 					seg.mesh.receiveShadow = true;
 
-					seg.generateMatrix(diff);
-					//<debug>
-					console.log(seg.blockMatrix, seg.blockMatrix.length)
-					// resultMatrix.push(seg.blockMatrix);
-					//</debug>
 				})(this.segments[i], this.diff);			
 
 			this.scene.add(this.ambientLight); 
 
 			this.scene.add(this.spotLight);
-
-			//<debug>
-			// console.log(resultMatrix);
-			//</debug>
 		};
 
 		Scene.prototype.animate = function () {
@@ -88,10 +76,7 @@ define([
 				}
 
 				(function (segment, pos, speed, diff) {
-					// console.log(Math.floor(pos.z + speed), (402 - 380));
-					console.log(speed)
-
-					if ( /*Math.floor*/(pos.z + speed) < (401 - 380) ) {
+					if ( Math.floor(pos.z + speed) < (401 - 380) ) {
 						pos.z += speed;
 					}
 					else {
@@ -115,6 +100,9 @@ define([
 
 		Scene.prototype.addSegment = function (segment) {
 			this.segments.push(segment);
+			segment.generateMatrix(this.diff);
+			this.obstacle.addToSegment( segment.mesh, segment.blockMatrix );
+
 			this.scene.add(segment.mesh);
 		};
 

@@ -4,10 +4,6 @@ define([
 	function (THREE) {
 		'use strict';
 
-		var WIDTH = 24,
-			HEIGHT = 24,
-			DEPTH = 6;
-
 		var wallTexture = THREE.ImageUtils.loadTexture('/img/Brickwall_texture.jpg'),
 			ceilingTexture = THREE.ImageUtils.loadTexture('/img/Flagstone1.png'),
 			floorTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
@@ -60,8 +56,8 @@ define([
 		var PASS = 1,
 			ABYSS = 2;
 
-		function Segment () {
-			this.geometry =  new THREE.BoxGeometry( WIDTH, HEIGHT, DEPTH );
+		function Segment (options) {
+			this.geometry =  new THREE.BoxGeometry( options.width, options.height, options.depth );
 			this.material = new THREE.MeshFaceMaterial( materials );
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
 		};
@@ -123,6 +119,8 @@ define([
 
 				matrixPositions.splice(pos, 1);
 			}
+
+			return this.blockMatrix;
 		};
 
 		Segment.prototype.get = function () {
