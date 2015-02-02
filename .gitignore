@@ -5,3 +5,4 @@ sites/*/settings*.php
 node_modules
 develop/js/vendor
 /build
+/develop/js/script.min.js
