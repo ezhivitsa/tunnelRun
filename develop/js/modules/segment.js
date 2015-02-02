@@ -109,8 +109,6 @@ define([
 				}
 			}
 
-			console.log(abyssNum)
-			console.log(passPerSide * (SIDES - abyssNum))
 			var randomPos = 0;
 			for ( i = 0; i < passPerSide * (SIDES - abyssNum); i++ ) {
 				var pos = Math.floor(Math.random() * matrixPositions.length);

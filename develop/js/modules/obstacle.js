@@ -22,7 +22,6 @@ define(['three'], function(THREE) {
 	}
 
 	Obstacle.prototype.addToSegment = function(segment, map) {
-
 		// Init vars for cycle working
 		var iteration = 0,
 			blockLength = 0,
@@ -47,7 +46,7 @@ define(['three'], function(THREE) {
 				if ((iteration + 1) % (this.vSize - 1) != 0) {
 					blockLength++;
 				} else {
-					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, segment.position.z, "ob_" + count);
+					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), (iteration + 1) % this.vSize, blockLength + 1, segment.position.z, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);
@@ -56,7 +55,16 @@ define(['three'], function(THREE) {
 			}
 		}
 
+		segment.myObstacleCount = count;
+
 		return segment;
+	};
+
+	Obstacle.prototype.refreshSegment = function(segment, map) {
+		for (var i = 0; i < segment.myObstacleCount; i++) {
+			segment.remove(segment.getObjectByName('ob_' + i));
+		}
+		this.addToSegment(segment, map);
 	};
 
 	Obstacle.prototype.addPlane = function(location, zPos, serialNumber) {
@@ -116,7 +124,7 @@ define(['three'], function(THREE) {
 				figure.position.y = this.vSize - length - (pos - length + 1) * 2;
 				figure.position.x = -(this.vSize - 1);
 		}
-		figure.position.z = zPos;
+		figure.position.z = zPos + (Math.random() > 0.5) ? 0 : -1;
 		figure.name = serialNumber;
 		figure.castShadow = true;
 

@@ -82,6 +82,7 @@ define([
 					else {
 						pos.z += -401 + speed;
 						segment.generateMatrix(diff)
+						self.obstacle.refreshSegment( segment.mesh, segment.blockMatrix );
 					}
 				})(this.segments[i], this.segments[i].mesh.position, this.speed / 100, this.diff);
 			}
