@@ -25,7 +25,7 @@ define([
 			segmentSize = {
 				width: 24,
 				height: 24,
-				depth: 6
+				depth: 12
 			}
 			canvasElement = document.getElementById("WebGLCanvas");
 
@@ -39,7 +39,7 @@ define([
 
 		scene.init();
 
-		var NUMOFSEGMENT = 67;
+		var NUMOFSEGMENT = 33;
 		for (var i = 0; i < NUMOFSEGMENT; i++) {
 			scene.addSegment( new Segment(segmentSize) );
 		}

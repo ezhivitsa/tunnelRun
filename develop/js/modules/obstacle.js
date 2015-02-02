@@ -124,7 +124,12 @@ define(['three'], function(THREE) {
 				figure.position.y = this.vSize - length - (pos - length + 1) * 2;
 				figure.position.x = -(this.vSize - 1);
 		}
-		figure.position.z = zPos + (Math.random() > 0.5) ? 0 : -1;
+
+		var chance = Math.random();
+		if (chance < 0.25) {
+
+		}
+		figure.position.z = ((chance < 0.25) ? 0 : (chance < 0.5) ? -2 : (chance < 0.75) ? -1 : -3);
 		figure.name = serialNumber;
 		figure.castShadow = true;
 

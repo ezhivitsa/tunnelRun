@@ -49,7 +49,7 @@ define([
 			for (var i = 0; i < this.segments.length; i++)
 				(function (seg, diff) {
 					seg.mesh.position.y = 3;
-					seg.mesh.position.z = -380 + i*5.99;
+					seg.mesh.position.z = -380 + i*11.99;
 					seg.mesh.receiveShadow = true;
 
 				})(this.segments[i], this.diff);			
@@ -76,11 +76,11 @@ define([
 				}
 
 				(function (segment, pos, speed, diff) {
-					if ( Math.floor(pos.z + speed) < (401 - 380) ) {
+					if ( Math.floor(pos.z + speed) < (395 - 380) ) {
 						pos.z += speed;
 					}
 					else {
-						pos.z += -401 + speed;
+						pos.z += -395 + speed;
 						segment.generateMatrix(diff)
 						self.obstacle.refreshSegment( segment.mesh, segment.blockMatrix );
 					}

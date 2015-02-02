@@ -10,13 +10,13 @@ define([
 
 		wallTexture.wrapS = THREE.RepeatWrapping;
 		wallTexture.wrapT = THREE.RepeatWrapping;
-		wallTexture.repeat.set(1,4);
+		wallTexture.repeat.set(2,4);
 		floorTexture.wrapS = THREE.RepeatWrapping;
 		floorTexture.wrapT = THREE.RepeatWrapping;
-		floorTexture.repeat.set(4,1);
+		floorTexture.repeat.set(4,2);
 		ceilingTexture.wrapS = THREE.RepeatWrapping;
 		ceilingTexture.wrapT = THREE.RepeatWrapping;
-		ceilingTexture.repeat.set(4,1);
+		ceilingTexture.repeat.set(4,2);
 
 		var materials = [
 			new THREE.MeshLambertMaterial({
