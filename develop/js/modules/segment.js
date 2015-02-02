@@ -10,7 +10,7 @@ define([
 
 		var wallTexture = THREE.ImageUtils.loadTexture('/img/Brickwall_texture.jpg'),
 			ceilingTexture = THREE.ImageUtils.loadTexture('/img/Flagstone1.png'),
-			floorTexture = THREE.ImageUtils.loadTexture('/img/kt_rot_4_fade2_drk.jpg');
+			floorTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
 
 		wallTexture.wrapS = THREE.RepeatWrapping;
 		wallTexture.wrapT = THREE.RepeatWrapping;
