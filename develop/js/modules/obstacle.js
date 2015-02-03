@@ -36,7 +36,7 @@ define(['three'], function(THREE) {
 					count++;
 					segment.add(holder);
 				} else if (blockLength != 0) {
-					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, segment.position.z, "ob_" + count);
+					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);
@@ -46,7 +46,7 @@ define(['three'], function(THREE) {
 				if ((iteration + 1) % (this.vSize - 1) != 0) {
 					blockLength++;
 				} else {
-					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), (iteration + 1) % this.vSize, blockLength + 1, segment.position.z, "ob_" + count);
+					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), (iteration + 1) % this.vSize, blockLength + 1, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);
@@ -67,7 +67,7 @@ define(['three'], function(THREE) {
 		this.addToSegment(segment, map);
 	};
 
-	Obstacle.prototype.addPlane = function(location, zPos, serialNumber) {
+	Obstacle.prototype.addPlane = function(location, serialNumber) {
 		var plane = null;
 
 		switch (location) {
@@ -94,13 +94,13 @@ define(['three'], function(THREE) {
 				plane.position.x = -(this.vSize - 0.1);
 		}
 
-		plane.position.z = zPos;
+		plane.position.z = -this.hSize / 2;
 		planer.name = serialNumber;
 
 		return plane;
 	};
 
-	Obstacle.prototype.addFigure = function(location, pos, length, zPos, serialNumber) {
+	Obstacle.prototype.addFigure = function(location, pos, length, serialNumber) {
 		var figure = null;
 
 		switch (location) {
