@@ -18,7 +18,7 @@ define([
 				height: window.innerHeight - 20
 			},
 			heroSize = {
-				redius: 5,
+				radius: 1,
 				widthSegments: 100,
 				heightSegments: 100
 			},
