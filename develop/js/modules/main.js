@@ -31,7 +31,7 @@ define([
 
 		var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
 			camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 1000),
-			obstacle = new Obstacle( segmentSize.width / 2, segmentSize.height / 2 ),
+			obstacle = new Obstacle( segmentSize.width / 2, segmentSize.depth / 2 ),
 			scene = new Scene(renderer.get(), camera.get(), obstacle),
 			hero = new Hero(heroSize);
 
