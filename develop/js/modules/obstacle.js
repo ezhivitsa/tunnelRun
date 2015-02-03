@@ -95,7 +95,7 @@ define(['three'], function(THREE) {
 		}
 
 		plane.position.z = zPos;
-		planer.name = serialNumber;
+		plane.name = serialNumber;
 
 		return plane;
 	};
