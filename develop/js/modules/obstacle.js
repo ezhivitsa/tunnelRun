@@ -9,7 +9,7 @@ define(['three'], function(THREE) {
 		}),
 		planeMaterial2 = new THREE.MeshBasicMaterial({
 			color: 0x000000,
-			side: THREE.Doubleside
+			side: THREE.DoubleSide
 		}),
 		cubeMaterial = new THREE.MeshLambertMaterial({
 			color: 0x00ff00
@@ -18,7 +18,7 @@ define(['three'], function(THREE) {
 	function Obstacle(vSize, hSize) {
 		this.vSize = vSize;
 		this.hSize = hSize;
-		this.planeGeometry = new THREE.PlaneGeometry(this.vSize * 2, this.hSize * 2);
+		this.planeGeometry = new THREE.PlaneBufferGeometry(this.vSize * 2, this.hSize * 2);
 	}
 
 	Obstacle.prototype.addToSegment = function(segment, map) {
@@ -26,17 +26,19 @@ define(['three'], function(THREE) {
 		var iteration = 0,
 			blockLength = 0,
 			holder = null,
-			count = 0;
+			count = 0,
+			sidePos = 0;
 
 		while (iteration < map.length) {
+			sidePos = Math.floor(iteration / (this.vSize - 1));
 			if (map[iteration]) {
 				if (map[iteration] == 2) {
-					iteration += (this.vSize - 1);
-					holder = this.addPlane(Math.floor(iteration / (this.vSize - 1)), segment.position.z, "ob_" + count);
+					holder = this.addPlane(sidePos, "ob_" + count);
+					iteration += (this.vSize - 2);
 					count++;
 					segment.add(holder);
 				} else if (blockLength != 0) {
-					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), iteration % (this.vSize - 1), blockLength, "ob_" + count);
+					holder = this.addFigure(sidePos, iteration % (this.vSize - 1), blockLength, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);
@@ -46,7 +48,7 @@ define(['three'], function(THREE) {
 				if ((iteration + 1) % (this.vSize - 1) != 0) {
 					blockLength++;
 				} else {
-					holder = this.addFigure(Math.floor(iteration / (this.vSize - 1)), (iteration + 1) % this.vSize, blockLength + 1, "ob_" + count);
+					holder = this.addFigure(sidePos, this.vSize - 1, blockLength + 1, "ob_" + count);
 					blockLength = 0;
 					count++;
 					segment.add(holder);

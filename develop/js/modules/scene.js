@@ -17,7 +17,7 @@ define([
 			this.scene = new THREE.Scene();	
 
 			this.segments = [];
-			this.diff = 1;
+			this.diff = 0.1;
 			this.iteration = 0;
 			this.speed = MIN_SPEED;
 		};
@@ -102,7 +102,6 @@ define([
 		Scene.prototype.addSegment = function (segment) {
 			this.segments.push(segment);
 			segment.generateMatrix(this.diff);
-			console.log(segment.blockMatrix)
 			this.obstacle.addToSegment( segment.mesh, segment.blockMatrix );
 
 			this.scene.add(segment.mesh);
