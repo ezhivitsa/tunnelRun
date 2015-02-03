@@ -56,8 +56,8 @@ define([
 				moveDim: 'x'
 			},
 			right: {
-				x: 12,
-				y: 0,
+				x: 11,
+				y: 3,
 				moveDim: 'y'
 			},
 			bottom: {
@@ -66,8 +66,8 @@ define([
 				moveDim: 'x'
 			},
 			left: {
-				x: -12,
-				y: 0,
+				x: -11,
+				y: 3,
 				moveDim: 'y'
 			}
 		};
@@ -82,7 +82,7 @@ define([
 			this.currentPosition = {
 				side: 0,
 				posFromLeft: 12,
-				position: POSITIONS.top
+				position: POSITIONS.left
 			};
 
 			this.addOnPosition();

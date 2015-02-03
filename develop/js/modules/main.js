@@ -8,9 +8,10 @@ define([
 		'camera',
 		'segment',
 		'hero',
-		'obstacle'
+		'obstacle',
+		'animation'
 	],
-	function(THREE, Projector, TrackballControls, Scene, Renderer, Camera, Segment, Hero, Obstacle) {
+	function(THREE, Projector, TrackballControls, Scene, Renderer, Camera, Segment, Hero, Obstacle, Animation) {
 		'use strict';
 
 		var pageSize = {
@@ -29,6 +30,8 @@ define([
 			}
 			canvasElement = document.getElementById("WebGLCanvas");
 
+		var animation = new Animation();
+
 		var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
 			camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 1000),
 			obstacle = new Obstacle( segmentSize.width / 2, segmentSize.depth / 2 ),
@@ -45,6 +48,8 @@ define([
 		}
 		scene.addHero(hero);
 		scene.render();
-		scene.animate();
+		scene.animate(animation);
+
+		animation.start();
 	}
 );
