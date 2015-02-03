@@ -93,9 +93,8 @@ define(['three'], function(THREE) {
 				plane.rotation.y = -Math.PI / 2;
 				plane.position.x = -(this.vSize - 0.1);
 		}
-
 		plane.position.z = -this.hSize / 2;
-		planer.name = serialNumber;
+		plane.name = serialNumber;
 
 		return plane;
 	};

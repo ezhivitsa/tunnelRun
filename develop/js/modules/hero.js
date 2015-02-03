@@ -52,7 +52,7 @@ define([
 		var POSITIONS = {
 			top: {
 				x: 0,
-				y: 12,
+				y: 14,
 				moveDim: 'x'
 			},
 			right: {

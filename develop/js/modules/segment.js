@@ -87,13 +87,15 @@ define([
 				abyssNum = 3;
 			}
 
+			console.log(abyssNum, diff);
+
 			for ( var i = 0; i < abyssNum; i++ ) {
 				var sideNum = Math.floor(Math.random() * sides.length),
 					randSide = sides[sideNum];
 				sides.splice(sideNum, 1);
 
 				for ( var j = SIDE_LINES*randSide; j < SIDE_LINES*(randSide + 1); j++ ) {
-					this.blockMatrix = ABYSS;
+					this.blockMatrix[j] = ABYSS;
 				}
 				this.blockNumber -= (SIDE_LINES - 1);
 			}

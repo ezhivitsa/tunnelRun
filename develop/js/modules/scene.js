@@ -68,7 +68,7 @@ define([
 			for (var i = 0; i < this.segments.length; i++) {
 				this.iteration++;
 
-				if ( this.iteration > 10000 ) {
+				if ( this.iteration > 1000 ) {
 					( this.diff < 1 ) && ( this.diff += 0.1 );
 					( this.speed < MAX_SPEED ) && ( this.speed += 1 );
 
