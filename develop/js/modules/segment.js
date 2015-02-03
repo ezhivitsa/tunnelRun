@@ -94,7 +94,7 @@ define([
 					randSide = sides[sideNum];
 				sides.splice(sideNum, 1);
 
-				for ( var j = SIDE_LINES*randSide; j < SIDE_LINES*(randSide + 1); j++ ) {
+				for ( var j = SIDE_LINES*randSide; j < SIDE_LINES*(randSide + 1) - 1; j++ ) {
 					this.blockMatrix[j] = ABYSS;
 				}
 				this.blockNumber -= (SIDE_LINES - 1);
@@ -106,7 +106,7 @@ define([
 
 			var matrixPositions = [];
 			for ( i = 0; i < MATRIX_SIZE; i++ ) {
-				if ( this.blockMatrix != ABYSS ) {
+				if ( this.blockMatrix[i] != ABYSS ) {
 					matrixPositions.push(i);
 				}
 			}
