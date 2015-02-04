@@ -6,7 +6,7 @@ define([
 		'use strict';
 
 		var MAX_SPEED = 30,
-			MIN_SPEED = 10;
+			MIN_SPEED = 5;
 
 		function Scene (renderer, camera, obstacle) {
 			this.renderer = renderer;
@@ -36,10 +36,12 @@ define([
 			// Init controls
 			this.controls = new THREE.TrackballControls(this.camera);
 
-			this.ambientLight = new THREE.AmbientLight(0x202020);
+			this.ambientLight = new THREE.AmbientLight(0x505050);
 			this.spotLight = new THREE.SpotLight( 0xffffff );
-			this.spotLight.position.set( 0, 10, 60);
+			this.spotLight.position.set( 0, 20, 80);
 			this.spotLight.castShadow = true;
+			this.spotLight.shadowDarkness = 0.5;
+			// this.spotLight.shadowCameraVisible = true;
 		};
 
 		Scene.prototype.render = function () {			
@@ -68,7 +70,7 @@ define([
 			for (var i = 0; i < this.segments.length; i++) {
 				this.iteration++;
 
-				if ( this.iteration > 1000 ) {
+				if ( this.iteration > 100000 ) {
 					( this.diff < 1 ) && ( this.diff += 0.1 );
 					( this.speed < MAX_SPEED ) && ( this.speed += 1 );
 
