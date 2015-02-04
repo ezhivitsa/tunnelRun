@@ -1,8 +1,7 @@
 define([
-	'three',
-	'stats'
+	'three'
 ],
-	function (THREE, Stats) {
+	function (THREE) {
 		'use strict';
 
 		var MAX_SPEED = 30,
@@ -25,14 +24,6 @@ define([
 		Scene.prototype.init = function () {
 			this.camera.lookAt(this.scene.position);
 
-			this.stats = new Stats();
-			this.stats.setMode(0); // 0: fps, 1: ms
-
-			// align top-left
-			this.stats.domElement.style.position = 'absolute';
-			this.stats.domElement.style.left = '0px';
-			this.stats.domElement.style.top = '0px';
-
 			// Init controls
 			this.controls = new THREE.TrackballControls(this.camera);
 
@@ -44,10 +35,7 @@ define([
 			// this.spotLight.shadowCameraVisible = true;
 		};
 
-		Scene.prototype.render = function () {			
-
-			document.body.appendChild( this.stats.domElement );
-
+		Scene.prototype.render = function () {
 			for (var i = 0; i < this.segments.length; i++)
 				(function (seg, diff) {
 					seg.mesh.position.y = 3;
@@ -61,12 +49,20 @@ define([
 			this.scene.add(this.spotLight);
 		};
 
-		Scene.prototype.animate = function () {
+		Scene.prototype.animate = function (animation) {
 			var self = this;
-			this.stats.begin();
 
+			animation.addAction(function () {
+				self.updateControls.call(self);
+				self.updateSegments.call(self);
+			});
+		};
+
+		Scene.prototype.updateControls = function () {
 			this.controls.update();
-			// Animate 
+		};
+
+		Scene.prototype.updateSegments = function () {
 			for (var i = 0; i < this.segments.length; i++) {
 				this.iteration++;
 
@@ -77,7 +73,7 @@ define([
 					this.iteration = 0;
 				}
 
-				(function (segment, pos, speed, diff) {
+				(function (segment, pos, speed, diff, self) {
 					if ( Math.floor(pos.z + speed) < (395 - 380) ) {
 						pos.z += speed;
 					}
@@ -86,15 +82,10 @@ define([
 						segment.generateMatrix(diff)
 						self.obstacle.refreshSegment( segment.mesh, segment.blockMatrix );
 					}
-				})(this.segments[i], this.segments[i].mesh.position, this.speed / 100, this.diff);
+				})(this.segments[i], this.segments[i].mesh.position, this.speed / 100, this.diff, this);
 			}
 
-
 			this.renderer.render(this.scene, this.camera);
-			this.stats.end();
-			requestAnimationFrame(function () {
-				self.animate.apply(self, arguments);
-			});
 		};
 
 		Scene.prototype.get = function () {
