@@ -27,7 +27,7 @@ define([
 			// Init controls
 			this.controls = new THREE.TrackballControls(this.camera);
 
-			this.ambientLight = new THREE.AmbientLight(0x505050);
+			this.ambientLight = new THREE.AmbientLight(0x202020);
 			this.spotLight = new THREE.SpotLight( 0xffffff );
 			this.spotLight.position.set( 0, 20, 80);
 			this.spotLight.castShadow = true;

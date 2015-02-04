@@ -26,17 +26,20 @@ define([
 				new THREE.MeshLambertMaterial({
 					map: wallTexture,
 					side: THREE.BackSide,
-					opacity: 0
+					opacity: 0,
+					emissive: 0x505050
 				}),
 				new THREE.MeshLambertMaterial({
 					map: wallTexture,
 					side: THREE.BackSide,
-					opacity: 0
+					opacity: 0,
+					emissive: 0x505050
 				}),
 				new THREE.MeshLambertMaterial({
 					map: floorWallTexture,
 					side: THREE.BackSide,
-					opacity: 0
+					opacity: 0,
+					emissive: 0x505050
 				}),
 				new THREE.MeshLambertMaterial({
 					map: floorWallTexture,
