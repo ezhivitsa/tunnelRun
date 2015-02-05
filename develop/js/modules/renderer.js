@@ -12,7 +12,7 @@ define([
 			
 			this.renderer.setSize(width, height);
 			this.renderer.shadowMapEnabled = true;
-			this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
+			// this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
 			// this.renderer.shadowMapDebug = true;
 			canvasElement.appendChild(this.renderer.domElement);
 		}

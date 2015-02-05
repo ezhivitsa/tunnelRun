@@ -14,12 +14,7 @@ define([
 	function(THREE, Projector, TrackballControls, Scene, Renderer, Camera, Segment, Hero, Obstacle, Animation) {
 		'use strict';
 
-		var mainTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
-
 		THREE.DefaultLoadingManager.onLoad = function (  ) {
-
-			mainTexture.wrapS = THREE.RepeatWrapping;
-			mainTexture.wrapT = THREE.RepeatWrapping;
 
 			var pageSize = {
 					width: window.innerWidth - 10,
@@ -33,13 +28,11 @@ define([
 				segmentOptions = {
 					width: 24,
 					height: 24,
-					depth: 12,
-					texture: mainTexture
+					depth: 12
 				},
 				obstacleOptions = {
 					width: segmentOptions.width / 2,
-					depth: segmentOptions.depth / 2,
-					texture: mainTexture
+					depth: segmentOptions.depth / 2
 				},
 				canvasElement = document.getElementById("WebGLCanvas");
 

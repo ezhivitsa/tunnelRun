@@ -31,7 +31,15 @@ define([
 			this.spotLight = new THREE.SpotLight( 0xffffff );
 			this.spotLight.position.set( 0, 20, 80);
 			this.spotLight.castShadow = true;
-			this.spotLight.shadowDarkness = 0.5;
+			// this.spotLight.shadowDarkness = 0.5;
+			// this.spotLight.shadowCameraNear	= 0.01;
+			// this.spotLight.shadowCameraFov	= 45;
+			// this.spotLight.shadowCameraFar	= 250;
+			// this.spotLight.shadowCameraVisible	= false;
+			// this.spotLight.shadowBias	= 0.00;
+			// this.spotLight.shadowDarkness	= 0.6;
+			// this.spotLight.shadowMapWidth = 4096;
+			// this.spotLight.shadowMapHeight = 4096;
 			// this.spotLight.shadowCameraVisible = true;
 		};
 

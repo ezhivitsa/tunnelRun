@@ -4,6 +4,16 @@ define([
 	function (THREE) {
 		'use strict';
 
+		var boxTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
+		boxTexture.wrapS = THREE.RepeatWrapping;
+		boxTexture.wrapT = THREE.RepeatWrapping;
+
+		var wallTexture = null;
+
+		var floorWallTexture = null;
+
+		var materials = null;
+
 		var SIDE_LINES = 11,
 			SIDES = 4,
 			MATRIX_SIZE = SIDE_LINES * SIDES;
@@ -14,35 +24,39 @@ define([
 		function Segment (options) {
 			this.geometry =  new THREE.BoxGeometry( options.width, options.height, options.depth );
 
-			var wallTexture = options.texture.clone();
-			wallTexture.needsUpdate = true; 
-			wallTexture.repeat.set(2,4);
+			!wallTexture && ((wallTexture = boxTexture.clone()) &&
+			(wallTexture.needsUpdate = true) && 
+			wallTexture.repeat.set(2,4));	
 
-			var floorWallTexture = options.texture.clone();
-			floorWallTexture.needsUpdate = true; 
-			floorWallTexture.repeat.set(4,2);
+			!floorWallTexture && ((floorWallTexture = boxTexture.clone()) &&
+			(floorWallTexture.needsUpdate = true) &&
+			floorWallTexture.repeat.set(4,2));
 
-			var materials = [
+			!materials && (materials = [
 				new THREE.MeshLambertMaterial({
 					map: wallTexture,
+					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0,
 					emissive: 0x505050
 				}),
 				new THREE.MeshLambertMaterial({
 					map: wallTexture,
+					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0,
 					emissive: 0x505050
 				}),
 				new THREE.MeshLambertMaterial({
 					map: floorWallTexture,
+					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0,
 					emissive: 0x505050
 				}),
 				new THREE.MeshLambertMaterial({
 					map: floorWallTexture,
+					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0
 				}),
@@ -54,7 +68,7 @@ define([
 					transparent: true, 
 					opacity: 0
 				})
-			];
+			]);		
 
 			this.material = new THREE.MeshFaceMaterial( materials );
 			this.mesh = new THREE.Mesh(this.geometry, this.material.clone());

@@ -37,10 +37,11 @@ define([
 		};
 
 		Animation.prototype.startAnimationFrame = function () {
-			var self = this;
+			var self = this;			
 
 			requestAnimationFrame(function () {
 				self.stats.begin();
+				// console.log(arguments);
 
 				for ( var i = 0; i < self.actions.length; i++ ) {
 					self.actions[i]();
