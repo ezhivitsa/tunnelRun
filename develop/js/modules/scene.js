@@ -30,7 +30,7 @@ define([
 			this.spotLight.position.set( 0, 20, 80);
 			this.spotLight.castShadow = true;
 			// this.spotLight.shadowDarkness = 0.5;
-			// this.spotLight.shadowCameraNear	= 0.01;
+			// this.spotLight.shadowCameraNear	= 0;
 			// this.spotLight.shadowCameraFov	= 45;
 			// this.spotLight.shadowCameraFar	= 250;
 			// this.spotLight.shadowCameraVisible	= false;

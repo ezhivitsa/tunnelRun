@@ -13,6 +13,11 @@ define([
 			obstacleOptions: {
 				width: 12,
 				depth: 6
+			},
+			figureOptions: {
+				maxLength: 11,
+				pointLength: 2,
+				color:  0x004793
 			}
 		};
 	}
