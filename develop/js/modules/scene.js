@@ -10,7 +10,7 @@ define([
 		function Scene (renderer, camera, diff) {
 			this.renderer = renderer;
 			this.camera = camera;
-			this.obstacle = new Obstacle( consts.segmentSize.width / 2, consts.segmentSize.depth / 2 );
+			this.obstacle = new Obstacle( consts.obstacleOptions );
 			this.diff = diff;
 
 			// Init scene
@@ -77,7 +77,7 @@ define([
 					else {
 						pos.z += -395 + speed * delta;
 						segment.generateMatrix(diff);
-						console.log(segment.mesh)
+						// console.log(segment.mesh)
 						self.obstacle.refreshSegment( segment.mesh, segment.blockMatrix );
 					}
 				})(this.segments[i], this.segments[i].mesh.position, this.diff.get('speed'), this.diff.get('diff'), this, delta);

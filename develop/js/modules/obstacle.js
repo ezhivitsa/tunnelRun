@@ -23,6 +23,7 @@ define(['three'], function(THREE) {
 			sidePos = Math.floor(iteration / (this.vSize - 1));
 			if (map[iteration]) {
 				if (map[iteration] == 2) {
+					console.log(sidePos,iteration)
 					segment.material.materials[sidePos == 0 ? 3 : sidePos == 1 ? 0 : sidePos == 2 ? 2 : 1].transparent = true;
 					iteration += (this.vSize - 2);
 					// count++;
@@ -47,6 +48,7 @@ define(['three'], function(THREE) {
 				iteration++;
 			}
 		}
+		console.log(segment)
 
 		segment.myObstacleCount = count;
 
@@ -54,6 +56,8 @@ define(['three'], function(THREE) {
 	};
 
 	Obstacle.prototype.refreshSegment = function(segment, map) {
+		console.log(map);
+
 		for (var i = 0; i < segment.myObstacleCount; i++) {
 			segment.remove(segment.getObjectByName('ob_' + i));
 			for(var j = 0; j < 4; j++) {
@@ -61,6 +65,8 @@ define(['three'], function(THREE) {
 			}
 		}
 		this.addToSegment(segment, map);
+
+		return segment;
 	};
 
 	Obstacle.prototype.addFigure = function(location, pos, length, serialNumber) {

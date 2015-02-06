@@ -9,6 +9,10 @@ define([
 				width: 24,
 				height: 24,
 				depth: 12
+			},
+			obstacleOptions: {
+				width: 12,
+				depth: 6
 			}
 		};
 	}
