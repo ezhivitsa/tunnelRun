@@ -39,11 +39,11 @@ define([
 		Animation.prototype.startAnimationFrame = function () {
 			var self = this;
 
-			requestAnimationFrame(function () {
+			requestAnimationFrame(function (fpsTime) {
 				self.stats.begin();
 
 				for ( var i = 0; i < self.actions.length; i++ ) {
-					self.actions[i]();
+					self.actions[i](fpsTime);
 				}
 
 				if ( !this.pause ) {

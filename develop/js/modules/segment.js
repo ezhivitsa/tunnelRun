@@ -56,6 +56,15 @@ define([
 		var PASS = 1,
 			ABYSS = 2;
 
+		var isPosssibleToAddPass = function (array) {
+			for ( var i = 0; i < array.length - 1; i++ ) {
+				if ( array[i] + 1 === array[i + 1] ) {
+					return true;
+				}
+			}
+			return false;
+		};
+
 		function Segment (options) {
 			this.geometry =  new THREE.BoxGeometry( options.width, options.height, options.depth );
 			this.material = new THREE.MeshFaceMaterial( materials );
@@ -99,26 +108,75 @@ define([
 			}
 
 			// generation passages
-			var passPerSide = Math.floor(SIDE_LINES*Math.pow(Math.random()*0.875 + 0.01, diff*8/3 + 1/3));
-			( !passPerSide ) && ( passPerSide = 1 );
+			var passPerSide = Math.floor(SIDE_LINES * Math.pow(Math.random()*0.875 + 0.01, diff*8/3 + 1/3));
+			if ( !passPerSide || passPerSide === 1 ) {
+				passPerSide = 2;
+			}
 
-			var matrixPositions = [];
+			var arrayPositions = [];
 			for ( i = 0; i < MATRIX_SIZE; i++ ) {
 				if ( this.blockMatrix[i] != ABYSS ) {
-					matrixPositions.push(i);
+					var prevNum = (i - 1 + MATRIX_SIZE) % MATRIX_SIZE,
+						nextNum = (i + 1) % MATRIX_SIZE;
+
+					if ( this.blockMatrix[prevNum] == ABYSS && this.blockMatrix[nextNum] ) {
+						this.blockMatrix[i] = 1;
+					}
+					else {
+						arrayPositions.push(i);
+					}
 				}
 			}
 
 			var randomPos = 0;
 			for ( i = 0; i < passPerSide * (SIDES - abyssNum); i++ ) {
-				var pos = Math.floor(Math.random() * matrixPositions.length);
-				randomPos = matrixPositions[pos];
+				var pos = Math.floor(Math.random() * arrayPositions.length);
+				randomPos = arrayPositions[pos];
 				this.blockMatrix[randomPos] = PASS;
 
-				matrixPositions.splice(pos, 1);
+				arrayPositions.splice(pos, 1);
+				
+				if ( this.addNearPass(randomPos, arrayPositions) ) {
+					i++;
+				}
 			}
 
 			return this.blockMatrix;
+		};
+
+		Segment.prototype.addNearPass = function (pos, arrayPositions) {
+			var newPos = null;
+			if ( pos % SIDE_LINES === 0 ) {
+				// pos - position of the first line on the side
+				if ( !this.blockMatrix[pos + 1] ) {
+					newPos = pos + 1;
+				}
+			}
+			else if ( !pos % (SIDE_LINES - 1) === 0 ) {
+				// pos - position of the last line on the side
+				if ( !this.blockMatrix[pos - 1] ) {
+					newPos = pos - 1;
+				}
+			}
+			else {
+				// pos - position between first and last lines
+				if ( !this.blockMatrix[pos - 1] && !this.blockMatrix[pos + 1] ) {
+					if ( Math.random() < 0.5 ) {
+						newPos = pos - 1;
+					}
+					else {
+						newPos = pos + 1;
+					}
+				}
+			}
+
+			if ( newPos ) {
+				var p = arrayPositions.indexOf(newPos);
+				arrayPositions.splice(p, 1);
+				this.blockMatrix[newPos] = PASS;
+				return true;
+			}
+			return false;
 		};
 
 		Segment.prototype.get = function () {

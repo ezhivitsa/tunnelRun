@@ -1,24 +1,22 @@
 define([
-	'three'
+	'three',
+
+	'consts',
+	'obstacle'
 ],
-	function (THREE) {
+	function (THREE, consts, Obstacle) {
 		'use strict';
 
-		var MAX_SPEED = 30,
-			MIN_SPEED = 10;
-
-		function Scene (renderer, camera, obstacle) {
+		function Scene (renderer, camera, diff) {
 			this.renderer = renderer;
 			this.camera = camera;
-			this.obstacle = obstacle;
+			this.obstacle = new Obstacle( consts.segmentSize.width / 2, consts.segmentSize.depth / 2 );
+			this.diff = diff;
 
 			// Init scene
 			this.scene = new THREE.Scene();	
 
 			this.segments = [];
-			this.diff = 0.1;
-			this.iteration = 0;
-			this.speed = MIN_SPEED;
 		};
 
 		Scene.prototype.init = function () {
@@ -42,7 +40,7 @@ define([
 
 				})(this.segments[i], this.diff);			
 
-			this.scene.add(this.ambientLight); 
+			this.scene.add(this.ambientLight);
 
 			this.scene.add(this.spotLight);
 		};
@@ -64,23 +62,16 @@ define([
 			for (var i = 0; i < this.segments.length; i++) {
 				this.iteration++;
 
-				if ( this.iteration > 1000 ) {
-					( this.diff < 1 ) && ( this.diff += 0.1 );
-					( this.speed < MAX_SPEED ) && ( this.speed += 1 );
-
-					this.iteration = 0;
-				}
-
 				(function (segment, pos, speed, diff, self) {
 					if ( Math.floor(pos.z + speed) < (395 - 380) ) {
 						pos.z += speed;
 					}
 					else {
 						pos.z += -395 + speed;
-						segment.generateMatrix(diff)
+						segment.generateMatrix(diff);
 						self.obstacle.refreshSegment( segment.mesh, segment.blockMatrix );
 					}
-				})(this.segments[i], this.segments[i].mesh.position, this.speed / 100, this.diff, this);
+				})(this.segments[i], this.segments[i].mesh.position, this.diff.get('speed'), this.diff.get('diff'), this);
 			}
 
 			this.renderer.render(this.scene, this.camera);

@@ -7,42 +7,42 @@ define([
 		var BUTTONS = {
 			top: {
 				// W button
-				which: 119,
+				which: 87,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.top;
 				}
 			},
 			right: {
 				// D button
-				which: 100,
+				which: 68,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.right;
 				}
 			},
 			bottom: {
 				// S button
-				which: 115,
+				which: 83,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.bottom;
 				}
 			},
 			left: {
 				// A button
-				which: 97,
+				which: 65,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.left;
 				}
 			},
 			moveLeft: {
 				// -> button
-				which: 37,
+				which: 39,
 				handler: function (event) {
 
 				}
 			},
 			moveRight: {
 				// <- button
-				which: 39,
+				which: 37,
 				handler: function (event) {
 
 				}
@@ -53,43 +53,57 @@ define([
 			top: {
 				x: 0,
 				y: 14,
-				moveDim: 'x'
+				z: -3,
+				moveDim: 'x',
+				rotation: 'x'
 			},
 			right: {
 				x: 11,
 				y: 3,
-				moveDim: 'y'
+				z: -3,
+				moveDim: 'y',
+				rotation: '-y'
 			},
 			bottom: {
 				x: 0,
 				y: -8,
-				moveDim: 'x'
+				z: -3,
+				moveDim: 'x',
+				rotation: '-x'
 			},
 			left: {
 				x: -11,
 				y: 3,
-				moveDim: 'y'
+				z: -3,
+				moveDim: 'y',
+				rotation: 'y'
 			}
 		};
 
-		function Hero(options) {
+		var signRegExp = /(-?)(\w+)/;
+
+		function Hero(options, diff) {
 			this.geometry =  new THREE.SphereGeometry( options.radius, options.widthSegments, options.heightSegments );
 			this.material = new THREE.MeshLambertMaterial({
-				color: 0xffff00
+				color: 0xffff00//,
+				// shading: THREE.FlatShading
 			});
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
 
 			this.currentPosition = {
 				side: 0,
 				posFromLeft: 12,
-				position: POSITIONS.left
+				position: POSITIONS.bottom
 			};
 
+			this.diff = diff;
+
 			this.addOnPosition();
+			this.eventControl('on');
 		}
 
-		Hero.prototype.eventContol = function (action) {
-			if ( action !== 'on' ) {
+		Hero.prototype.eventControl = function (action) {
+			if ( action === 'on' ) {
 				action = 'addEventListener';
 			}
 			else {
@@ -98,7 +112,9 @@ define([
 
 			this.events = this.events || {
 				onKeydown: function (event) {
+					console.log(event.which)
 					for ( var button in BUTTONS ) {
+
 						if ( button.which === event.which ) {
 							button.handler.call(this, event);
 							break;
@@ -107,12 +123,32 @@ define([
 				}
 			};
 
-			document[action]('keydown', onKeydown);
+			document[action]('keydown', this.events.onKeydown);
 		};
 
 		Hero.prototype.addOnPosition = function () {
 			this.mesh.position.x = this.currentPosition.position.x;
 			this.mesh.position.y = this.currentPosition.position.y;
+			this.mesh.position.z = this.currentPosition.position.z;
+		};
+
+		Hero.prototype.animate = function (animation) {
+			var self = this;
+
+			animation.addAction(function () {
+				(function (rot) {
+					var sign = rot.match(signRegExp),
+						dim = sign[2];
+
+					sign = sign[1] ? -1 : 1;
+					self.mesh.rotation[dim] += (0.09*self.diff.get('diff') + 0.05) * sign;
+
+				})(self.currentPosition.position.rotation);
+			});
+		};
+
+		Hero.prototype.updatePosition = function () {
+
 		};
 
 		return Hero;
