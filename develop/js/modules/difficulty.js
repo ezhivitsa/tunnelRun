@@ -16,16 +16,18 @@ define([
 			var self = this;
 
 			animation.addAction(function (fpsTime) {
+				self.iteration++;
+
 				if ( self.lastFpsTime ) {
 					self.fps = fpsTime - self.lastFpsTime;
 				}
 				self.lastFpsTime = fpsTime;
 
-				if ( this.iteration > 100000 ) {
-					( this.diff < 1 ) && ( this.diff += 0.1 );
-					( this.speed < consts.maxSpeed ) && ( this.speed += 1 );
+				if ( self.iteration > 100000 ) {
+					( self.diff < 1 ) && ( self.diff += 0.1 );
+					( self.speed < consts.maxSpeed ) && ( self.speed += 1 );
 
-					this.iteration = 0;
+					self.iteration = 0;
 				}
 				//console.log(self.diff, ' ', self.speed);
 			});

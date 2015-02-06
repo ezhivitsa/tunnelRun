@@ -1,24 +1,14 @@
 define(['three'], function(THREE) {
 	'use strict';
 
-	// Init geometries and materials
-	var magma = THREE.ImageUtils.loadTexture('/img/lava.png'),
-		planeMaterial1 = new THREE.MeshLambertMaterial({
-			map: magma,
-			side: THREE.DoubleSide
-		}),
-		planeMaterial2 = new THREE.MeshBasicMaterial({
-			color: 0x000000,
-			side: THREE.DoubleSide
-		}),
-		cubeMaterial = new THREE.MeshLambertMaterial({
-			color: 0x00ff00
-		});
+	var cubeTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
+	cubeTexture.wrapS = THREE.RepeatWrapping;
+	cubeTexture.wrapT = THREE.RepeatWrapping;
 
-	function Obstacle(vSize, hSize) {
-		this.vSize = vSize;
-		this.hSize = hSize;
-		this.planeGeometry = new THREE.PlaneBufferGeometry(this.vSize * 2, this.hSize * 2);
+
+	function Obstacle(options) {
+		this.vSize = options.width;
+		this.hSize = options.height;
 	}
 
 	Obstacle.prototype.addToSegment = function(segment, map) {
@@ -33,10 +23,11 @@ define(['three'], function(THREE) {
 			sidePos = Math.floor(iteration / (this.vSize - 1));
 			if (map[iteration]) {
 				if (map[iteration] == 2) {
-					holder = this.addPlane(sidePos, "ob_" + count);
+					segment.material.materials[sidePos == 0 ? 3 : sidePos == 1 ? 0 : sidePos == 2 ? 2 : 1].transparent = true;
 					iteration += (this.vSize - 2);
-					count++;
-					segment.add(holder);
+					// count++;
+					// segment.add(holder);
+					continue;
 				} else if (blockLength != 0) {
 					holder = this.addFigure(sidePos, iteration % (this.vSize - 1), blockLength, "ob_" + count);
 					blockLength = 0;
@@ -65,62 +56,44 @@ define(['three'], function(THREE) {
 	Obstacle.prototype.refreshSegment = function(segment, map) {
 		for (var i = 0; i < segment.myObstacleCount; i++) {
 			segment.remove(segment.getObjectByName('ob_' + i));
+			for(var j = 0; j < 4; j++) {
+				segment.material.materials[j].transparent = false;
+			}
 		}
 		this.addToSegment(segment, map);
-	};
-
-	Obstacle.prototype.addPlane = function(location, serialNumber) {
-		var plane = null;
-
-		switch (location) {
-			case 0:
-				plane = new THREE.Mesh(this.planeGeometry, planeMaterial1);
-				plane.rotation.x = -Math.PI / 2;
-				plane.position.y = -(this.vSize - 0.1);
-				break;
-			case 1:
-				plane = new THREE.Mesh(this.planeGeometry, planeMaterial1);
-				plane.rotation.z = Math.PI / 2;
-				plane.rotation.y = -Math.PI / 2;
-				plane.position.x = (this.vSize - 0.1);
-				break;
-			case 2:
-				plane = new THREE.Mesh(this.planeGeometry, planeMaterial2);
-				plane.rotation.x = Math.PI / 2;
-				plane.position.y = (this.vSize - 0.1);
-				break;
-			default:
-				plane = new THREE.Mesh(this.planeGeometry, planeMaterial1);
-				plane.rotation.z = -Math.PI / 2;
-				plane.rotation.y = -Math.PI / 2;
-				plane.position.x = -(this.vSize - 0.1);
-		}
-		plane.position.z = 0;
-		plane.name = serialNumber;
-
-		return plane;
 	};
 
 	Obstacle.prototype.addFigure = function(location, pos, length, serialNumber) {
 		var figure = null;
 
+
+		var cubeTextureClone = cubeTexture.clone();
+		cubeTextureClone.needsUpdate = true;
+
+		var	cubeMaterial = new THREE.MeshLambertMaterial({ map: cubeTextureClone });
+		// var	cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x004793 });
+
 		switch (location) {
 			case 0:
+				cubeMaterial.map.repeat.set(length,1);
 				figure = new THREE.Mesh(new THREE.BoxGeometry(2 * length, 2, 2), cubeMaterial);
 				figure.position.y = -(this.vSize - 1);
 				figure.position.x = -this.vSize + length + (pos - length + 1) * 2;
 				break;
 			case 1:
+				cubeMaterial.map.repeat.set(1,length);
 				figure = new THREE.Mesh(new THREE.BoxGeometry(2, 2 * length, 2), cubeMaterial);
 				figure.position.y = -this.vSize + length + (pos - length + 1) * 2;
 				figure.position.x = (this.vSize - 1);
 				break;
 			case 2:
+				cubeMaterial.map.repeat.set(length,1);
 				figure = new THREE.Mesh(new THREE.BoxGeometry(2 * length, 2, 2), cubeMaterial);
 				figure.position.y = (this.vSize - 1);
 				figure.position.x = this.vSize - length - (pos - length + 1) * 2;
 				break;
 			default:
+				cubeMaterial.map.repeat.set(1,length);
 				figure = new THREE.Mesh(new THREE.BoxGeometry(2, 2 * length, 2), cubeMaterial);
 				figure.position.y = this.vSize - length - (pos - length + 1) * 2;
 				figure.position.x = -(this.vSize - 1);

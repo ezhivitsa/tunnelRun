@@ -4,50 +4,15 @@ define([
 	function (THREE) {
 		'use strict';
 
-		var wallTexture = THREE.ImageUtils.loadTexture('/img/Brickwall_texture.jpg'),
-			ceilingTexture = THREE.ImageUtils.loadTexture('/img/Flagstone1.png'),
-			floorTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
+		var boxTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
+		boxTexture.wrapS = THREE.RepeatWrapping;
+		boxTexture.wrapT = THREE.RepeatWrapping;
 
-		wallTexture.wrapS = THREE.RepeatWrapping;
-		wallTexture.wrapT = THREE.RepeatWrapping;
-		wallTexture.repeat.set(2,4);
-		floorTexture.wrapS = THREE.RepeatWrapping;
-		floorTexture.wrapT = THREE.RepeatWrapping;
-		floorTexture.repeat.set(4,2);
-		ceilingTexture.wrapS = THREE.RepeatWrapping;
-		ceilingTexture.wrapT = THREE.RepeatWrapping;
-		ceilingTexture.repeat.set(4,2);
+		var wallTexture = null;
 
-		var materials = [
-			new THREE.MeshLambertMaterial({
-				map: wallTexture,
-				side: THREE.BackSide
-			}),
-			new THREE.MeshLambertMaterial({
-				map: wallTexture,
-				side: THREE.BackSide
-			}),
-			new THREE.MeshLambertMaterial({
-				map: ceilingTexture,
-				side: THREE.BackSide
-			}),
-			new THREE.MeshLambertMaterial({
-				map: floorTexture,
-				side: THREE.BackSide
-			}),
-			new THREE.MeshLambertMaterial({
-				map: wallTexture,
-				side: THREE.BackSide,
-				transparent: true, 
-				opacity: 0
-			}),
-			new THREE.MeshLambertMaterial({
-				map: wallTexture,
-				side: THREE.BackSide,
-				transparent: true, 
-				opacity: 0
-			})
-		];
+		var floorWallTexture = null;
+
+		var materials = null;
 
 		var SIDE_LINES = 11,
 			SIDES = 4,
@@ -67,8 +32,56 @@ define([
 
 		function Segment (options) {
 			this.geometry =  new THREE.BoxGeometry( options.width, options.height, options.depth );
+
+			!wallTexture && ((wallTexture = boxTexture.clone()) &&
+			(wallTexture.needsUpdate = true) && 
+			wallTexture.repeat.set(2,4));	
+
+			!floorWallTexture && ((floorWallTexture = boxTexture.clone()) &&
+			(floorWallTexture.needsUpdate = true) &&
+			floorWallTexture.repeat.set(4,2));
+
+			!materials && (materials = [
+				new THREE.MeshLambertMaterial({
+					map: wallTexture,
+					// color: 0xbe34ba,
+					side: THREE.BackSide,
+					opacity: 0,
+					emissive: 0x505050
+				}),
+				new THREE.MeshLambertMaterial({
+					map: wallTexture,
+					// color: 0xbe34ba,
+					side: THREE.BackSide,
+					opacity: 0,
+					emissive: 0x505050
+				}),
+				new THREE.MeshLambertMaterial({
+					map: floorWallTexture,
+					// color: 0xbe34ba,
+					side: THREE.BackSide,
+					opacity: 0,
+					emissive: 0x505050
+				}),
+				new THREE.MeshLambertMaterial({
+					map: floorWallTexture,
+					// color: 0xbe34ba,
+					side: THREE.BackSide,
+					opacity: 0
+				}),
+				new THREE.MeshLambertMaterial({
+					transparent: true, 
+					opacity: 0
+				}),
+				new THREE.MeshLambertMaterial({
+					transparent: true, 
+					opacity: 0
+				})
+			]);		
+
 			this.material = new THREE.MeshFaceMaterial( materials );
-			this.mesh = new THREE.Mesh(this.geometry, this.material);
+			this.mesh = new THREE.Mesh(this.geometry, this.material.clone());
+
 		};
 
 		Segment.prototype.generateMatrix = function (diff) {
