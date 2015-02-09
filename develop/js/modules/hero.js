@@ -1,7 +1,10 @@
 define([
-	'three'
+	'three',
+
+	'consts',
+	'dataSource'
 ],
-	function (THREE) {
+	function (THREE, consts, DataSource) {
 		'use strict';
 
 		var BUTTONS = {
@@ -10,6 +13,7 @@ define([
 				which: 87,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.top;
+					return 'top';
 				}
 			},
 			right: {
@@ -17,6 +21,7 @@ define([
 				which: 68,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.right;
+					return 'right';
 				}
 			},
 			bottom: {
@@ -24,6 +29,7 @@ define([
 				which: 83,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.bottom;
+					return 'bottom';
 				}
 			},
 			left: {
@@ -31,6 +37,7 @@ define([
 				which: 65,
 				handler: function (event) {
 					this.currentPosition.position = POSITIONS.left;
+					return 'left';
 				}
 			},
 			moveLeft: {
@@ -82,11 +89,11 @@ define([
 
 		var signRegExp = /(-?)(\w+)/;
 
-		function Hero(options, diff) {
-			this.geometry =  new THREE.SphereGeometry( options.radius, options.widthSegments, options.heightSegments );
+		function Hero(diff) {
+			this.geometry =  new THREE.SphereGeometry( consts.hero.radius, consts.hero.widthSegments, consts.hero.heightSegments );
 			this.material = new THREE.MeshLambertMaterial({
-				color: 0xffff00//,
-				// shading: THREE.FlatShading
+				color: 0xffff00,
+				shading: THREE.FlatShading
 			});
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
 
@@ -104,26 +111,33 @@ define([
 
 		Hero.prototype.eventControl = function (action) {
 			if ( action === 'on' ) {
-				action = 'addEventListener';
+				action = 'addEvent';
 			}
 			else {
-				action = 'removeEventListener';
+				action = 'removeEvent';
 			}
 
 			this.events = this.events || {
 				onKeydown: function (event) {
-					console.log(event.which)
 					for ( var button in BUTTONS ) {
 
 						if ( button.which === event.which ) {
 							button.handler.call(this, event);
+
+							// fire custom event of change position
+							var fireEvent = new Event(':hero-position');
+							document.dispatchEvent(fireEvent);
 							break;
 						}
 					}
+				},
+				heroPosition: function (event) {
+
 				}
 			};
 
-			document[action]('keydown', this.events.onKeydown);
+			DataSource[action](document, 'keydown', this.events.onKeydown);
+			DataSource[action](document, ':hero-position', this.events.heroPosition);
 		};
 
 		Hero.prototype.addOnPosition = function () {

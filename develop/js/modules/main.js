@@ -24,20 +24,11 @@ define([
 					width: window.innerWidth - 10,
 					height: window.innerHeight - 20
 				},
-				heroSize = {
-					radius: 1,
-					widthSegments: 20,
-					heightSegments: 20
-				},
 				segmentOptions = {
 					width: 24,
 					height: 24,
 					depth: 12
 				},
-				// obstacleOptions = {
-				// 	width: segmentOptions.width / 2,
-				// 	depth: segmentOptions.depth / 2
-				// },
 				canvasElement = document.getElementById("WebGLCanvas");
 
 			var animation = new Animation();
@@ -45,7 +36,7 @@ define([
 			var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
 				camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 500),
 				scene = new Scene(renderer.get(), camera.get(), diff),
-				hero = new Hero(heroSize, diff);
+				hero = new Hero(diff);
 
 			camera.setPosition(0, 0, 11);
 

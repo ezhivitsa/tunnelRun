@@ -23,13 +23,13 @@ define([
 				}
 				self.lastFpsTime = fpsTime;
 
-				if ( self.iteration > 100000 ) {
+				if ( self.iteration > 1000 ) {
 					( self.diff < 1 ) && ( self.diff += 0.1 );
 					( self.speed < consts.maxSpeed ) && ( self.speed += 1 );
 
 					self.iteration = 0;
 				}
-				//console.log(self.diff, ' ', self.speed);
+				console.log(self.diff)
 			});
 		};
 

@@ -48,7 +48,6 @@ define(['three'], function(THREE) {
 				iteration++;
 			}
 		}
-		console.log(segment)
 
 		segment.myObstacleCount = count;
 
@@ -56,8 +55,6 @@ define(['three'], function(THREE) {
 	};
 
 	Obstacle.prototype.refreshSegment = function(segment, map) {
-		console.log(map);
-
 		for (var i = 0; i < segment.myObstacleCount; i++) {
 			segment.remove(segment.getObjectByName('ob_' + i));
 			for(var j = 0; j < 4; j++) {

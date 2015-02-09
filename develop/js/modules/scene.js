@@ -29,6 +29,8 @@ define([
 			this.spotLight = new THREE.SpotLight( 0xffffff );
 			this.spotLight.position.set( 0, 20, 80);
 			this.spotLight.castShadow = true;
+
+			this.currrentSegment = null;
 			// this.spotLight.shadowDarkness = 0.5;
 			// this.spotLight.shadowCameraNear	= 0.01;
 			// this.spotLight.shadowCameraFov	= 45;
@@ -77,7 +79,6 @@ define([
 					else {
 						pos.z += -395 + speed * delta;
 						segment.generateMatrix(diff);
-						// console.log(segment.mesh)
 						self.obstacle.refreshSegment( segment.mesh, segment.blockMatrix );
 					}
 				})(this.segments[i], this.segments[i].mesh.position, this.diff.get('speed'), this.diff.get('diff'), this, delta);
@@ -91,6 +92,8 @@ define([
 		};
 
 		Scene.prototype.addSegment = function (segment) {
+			this.currentSegment = this.currentSegment || segment;
+
 			this.segments.push(segment);
 			segment.generateMatrix(this.diff.get('diff'));
 			this.obstacle.addToSegment( segment.mesh, segment.blockMatrix );
