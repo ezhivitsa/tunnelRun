@@ -22,6 +22,12 @@ define([
 				width: 2,
 				height: 2,
 				depth: 2
+			},
+
+			figureOptions: {
+				maxLength: 11,
+				pointLength: 2,
+				color:  0x004793
 			}
 		};
 	}
