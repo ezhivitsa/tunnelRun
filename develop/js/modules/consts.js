@@ -4,6 +4,24 @@ define([
 		return {
 			maxSpeed: 30,
 			minSpeed: 10,
+			theme: {
+				magma: {
+					back: "/img/WP4YLUJW.jpg",
+					maintexture: "/img/8416969.jpg",
+					segmentEmissive: 0x505050
+				},
+				ice: {
+					back: "/img/cg4.jpg",
+					maintexture: "/img/Ice-1.jpg",
+					segmentEmissive: 0xffffff
+				},
+				ice2: {
+					back: "/img/galaxy_starfield.png",
+					maintexture: "/img/Winterland_Ocean.gif",
+					segmentEmissive: 0xffffff
+				},
+			},
+			enableShadow: false,
 
 			segmentSize: {
 				width: 24,

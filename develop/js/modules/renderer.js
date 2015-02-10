@@ -1,7 +1,8 @@
 define([
-	'three'
+	'three',
+	'consts'
 ], 
-	function (THREE) {
+	function (THREE, consts) {
 		'use strict';
 
 		function Renderer(canvasElement, width, height) {
@@ -11,7 +12,7 @@ define([
 			this.renderer.setClearColor(0xeeeeee);
 			
 			this.renderer.setSize(width, height);
-			this.renderer.shadowMapEnabled = true;
+			this.renderer.shadowMapEnabled = consts.enableShadow;
 			// this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
 			// this.renderer.shadowMapDebug = true;
 			canvasElement.appendChild(this.renderer.domElement);
