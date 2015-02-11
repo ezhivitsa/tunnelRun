@@ -1,18 +1,11 @@
 define([
-		'three',
+	'three',
 
-<<<<<<< HEAD
 	'dataSource',
 	'consts',
 	'obstacle'
 ],
 	function (THREE, DataSource, consts, Obstacle) {
-=======
-		'consts',
-		'obstacle'
-	],
-	function(THREE, consts, Obstacle) {
->>>>>>> origin/master
 		'use strict';
 
 		var back = THREE.ImageUtils.loadTexture('/img/WP4YLUJW.jpg');
