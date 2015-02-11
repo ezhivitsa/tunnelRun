@@ -146,10 +146,10 @@ define([
 			this.mesh.position.z = this.currentPosition.position.z;
 		};
 
-		Hero.prototype.animate = function (animation) {
+		Hero.prototype.animate = function () {
 			var self = this;
 
-			animation.addAction(function () {
+			DataSource.addAnimation(function () {
 				(function (rot) {
 					var sign = rot.match(signRegExp),
 						dim = sign[2];

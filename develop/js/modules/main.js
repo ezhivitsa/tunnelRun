@@ -3,20 +3,18 @@ define([
 		'projector',
 		'trackballControls',
 
+		'dataSource',
 		'scene',
 		'renderer',
 		'camera',
 		'segment',
 		'hero',
-		'animation',
 		'difficulty'
 	],
-	function(THREE, Projector, TrackballControls, Scene, Renderer, Camera, Segment, Hero, Animation, Difficulty) {
+	function(THREE, Projector, TrackballControls, DataSource, Scene, Renderer, Camera, Segment, Hero, Difficulty) {
 		'use strict';
 
 		var diff = new Difficulty();
-
-		var animation = new Animation();
 
 		THREE.DefaultLoadingManager.onLoad = function (  ) {
 
@@ -30,8 +28,6 @@ define([
 					depth: 12
 				},
 				canvasElement = document.getElementById("WebGLCanvas");
-
-			var animation = new Animation();
 
 			var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
 				camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 500),
@@ -48,11 +44,12 @@ define([
 			}
 			scene.addHero(hero);
 			scene.render();
-			scene.animate(animation);
-			hero.animate(animation);
-			diff.update(animation);
 
-			animation.start();
+			scene.animate();
+			hero.animate();
+			diff.update();
+
+			DataSource.startAnimation();
 		};
 	}
 );

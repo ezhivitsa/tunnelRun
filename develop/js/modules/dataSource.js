@@ -1,20 +1,65 @@
 define([
+	'stats'
 ],
-	function () {
+	function (Stats) {
 		'use strict';
 
+		function startAnimationFrame() {
+			var lastTimeMsec = null;
+
+			requestAnimationFrame(function(nowMsec) {
+				stats.begin();
+
+				if (!this.pause) {
+					startAnimationFrame();
+				}
+
+				lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
+				var deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
+				lastTimeMsec = nowMsec;
+
+				for (var i = 0; i < animations.length; i++) {
+					animations[i](deltaMsec/10, nowMsec/10);
+				}
+
+				stats.end();
+			});
+		}
+
 		var handlers = {},
-			animations = [];
+			animations = [],
+			pause = false,
+			stats = new Stats();
+
+		stats.setMode(0); // 0: fps, 1: ms
+
+		// align top-left
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.left = '0px';
+		stats.domElement.style.top = '0px';
 
 		return {
 			addAnimation: function (fn) {
-				animation.push(fn);
+				animations.push(fn);
 			},
 			removeAnimation: function (fn) {
 				if ( !fn ) {
 					// remove all animation actions
+					animations = [];
+				}
+				else if ( typeof(fn) === 'function' ) {
+					var pos = animations.indexOf(fn);
+					animations.splice(pos, 1);
 				}
 			},
+			startAnimation: function () {
+				pause = false;
+				startAnimationFrame();
+			},
+			stopAnimation: function () {
+				pause = true;
+			},
+
 			addEvent: function (elem, event, fn) {
 				if ( !handlers[elem] ) {
 					handlers[elem] = {};

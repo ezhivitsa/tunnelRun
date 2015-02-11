@@ -1,10 +1,11 @@
 define([
 	'three',
 
+	'dataSource',
 	'consts',
 	'obstacle'
 ],
-	function (THREE, consts, Obstacle) {
+	function (THREE, DataSource, consts, Obstacle) {
 		'use strict';
 
 		function Scene (renderer, camera, diff) {
@@ -57,10 +58,10 @@ define([
 			this.scene.add(this.spotLight);
 		};
 
-		Scene.prototype.animate = function (animation) {
+		Scene.prototype.animate = function () {
 			var self = this;
 
-			animation.addAction(function (delta, now) {
+			DataSource.addAnimation(function (delta, now) {
 				self.updateControls.call(self, delta, now);
 				self.updateSegments.call(self, delta, now);
 			});

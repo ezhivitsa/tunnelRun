@@ -1,7 +1,8 @@
 define([
-	'consts'
+	'consts',
+	'dataSource'
 ],
-	function (consts) {
+	function (consts, DataSource) {
 		'use strict';
 
 		function Difficulty () {
@@ -12,10 +13,10 @@ define([
 			this.lastFpsTime = 0;
 		};
 
-		Difficulty.prototype.update = function (animation) {
+		Difficulty.prototype.update = function () {
 			var self = this;
 
-			animation.addAction(function (fpsTime) {
+			DataSource.addAnimation(function (fpsTime) {
 				self.iteration++;
 
 				if ( self.lastFpsTime ) {
@@ -29,7 +30,6 @@ define([
 
 					self.iteration = 0;
 				}
-				console.log(self.diff)
 			});
 		};
 
