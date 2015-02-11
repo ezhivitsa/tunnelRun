@@ -30,7 +30,7 @@ define([
 				canvasElement = document.getElementById("WebGLCanvas");
 
 			var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
-				camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 500),
+				camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 700),
 				scene = new Scene(renderer.get(), camera.get(), diff),
 				hero = new Hero(diff);
 

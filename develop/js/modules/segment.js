@@ -1,12 +1,15 @@
 define([
-	'three'
+	'three',
+	'consts'
 ], 
-	function (THREE) {
+	function (THREE, consts) {
 		'use strict';
 
-		var boxTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
+		var boxTexture = THREE.ImageUtils.loadTexture(consts.theme.magma.maintexture);
 		boxTexture.wrapS = THREE.RepeatWrapping;
 		boxTexture.wrapT = THREE.RepeatWrapping;
+
+		var emissive = consts.theme.ice.segmentEmissive;
 
 		var wallTexture = null;
 
@@ -47,25 +50,26 @@ define([
 					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0,
-					emissive: 0x505050
+					emissive: emissive
 				}),
 				new THREE.MeshLambertMaterial({
 					map: wallTexture,
 					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0,
-					emissive: 0x505050
+					emissive: emissive
 				}),
 				new THREE.MeshLambertMaterial({
 					map: floorWallTexture,
 					// color: 0xbe34ba,
 					side: THREE.BackSide,
 					opacity: 0,
-					emissive: 0x505050
+					emissive: emissive
 				}),
 				new THREE.MeshLambertMaterial({
 					map: floorWallTexture,
 					// color: 0xbe34ba,
+					emissive: emissive,
 					side: THREE.BackSide,
 					opacity: 0
 				}),

@@ -1,7 +1,7 @@
 define(['three', 'consts', 'figure'], function(THREE, consts, Figure) {
 	'use strict';
 
-	var cubeTexture = THREE.ImageUtils.loadTexture('/img/8416969.jpg');
+	var cubeTexture = THREE.ImageUtils.loadTexture(consts.theme.magma.maintexture);
 	cubeTexture.wrapS = THREE.RepeatWrapping;
 	cubeTexture.wrapT = THREE.RepeatWrapping;
 
@@ -101,7 +101,7 @@ define(['three', 'consts', 'figure'], function(THREE, consts, Figure) {
 		var chance = Math.random();
 		figure.position.z = ((chance < 0.25) ? 0 : (chance < 0.5) ? -2 : (chance < 0.75) ? -1 : -3);
 		figure.name = serialNumber;
-		figure.castShadow = true;
+		figure.castShadow = consts.enableShadow;
 
 		return figure;
 	};
