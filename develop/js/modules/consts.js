@@ -47,15 +47,8 @@ define([
 				maxLength: 11,
 				pointLength: 2,
 				color:  0x004793
-			},
-
-			rays: {
-				forward: new THREE.Vector3(0, 0, -1),
-				right: new THREE.Vector3(1, 0, 0),
-				left: new THREE.Vector3(-1, 0, 0),
-				top: new THREE.Vector3(0, 1, 0),
-				bottom: new THREE.Vector3(0, -1, 0)
 			}
+
 		};
 	}
 )

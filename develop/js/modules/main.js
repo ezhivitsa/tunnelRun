@@ -9,9 +9,10 @@ define([
 		'camera',
 		'segment',
 		'hero',
-		'difficulty'
+		'difficulty',
+		'collision'
 	],
-	function(THREE, Projector, TrackballControls, DataSource, Scene, Renderer, Camera, Segment, Hero, Difficulty) {
+	function(THREE, Projector, TrackballControls, DataSource, Scene, Renderer, Camera, Segment, Hero, Difficulty, Collision) {
 		'use strict';
 
 		var diff = new Difficulty();
@@ -32,7 +33,8 @@ define([
 			var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
 				camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 700),
 				scene = new Scene(renderer.get(), camera.get(), diff),
-				hero = new Hero(diff);
+				hero = new Hero(diff),
+				collision = new Collision();
 
 			camera.setPosition(0, 0, 11);
 
@@ -45,9 +47,13 @@ define([
 			scene.addHero(hero);
 			scene.render();
 
+			collision.init(scene.getSegments(),hero);
+
 			scene.animate();
 			hero.animate();
 			diff.update();
+
+			collision.update();
 
 			DataSource.startAnimation();
 		};

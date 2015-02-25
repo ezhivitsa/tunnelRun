@@ -106,6 +106,10 @@ define([
 			return this.scene;
 		};
 
+		Scene.prototype.getSegments = function() {
+			return this.segments;
+		};
+
 		Scene.prototype.addSegment = function(segment) {
 			this.currentSegment = this.currentSegment || segment;
 
