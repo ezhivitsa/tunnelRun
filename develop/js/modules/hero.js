@@ -8,52 +8,12 @@ define([
 		'use strict';
 
 		var BUTTONS = {
-			top: {
-				// W button
-				which: 87,
-				handler: function (event) {
-					this.currentPosition.position = POSITIONS.top;
-					return 'top';
-				}
-			},
-			right: {
-				// D button
-				which: 68,
-				handler: function (event) {
-					this.currentPosition.position = POSITIONS.right;
-					return 'right';
-				}
-			},
-			bottom: {
-				// S button
-				which: 83,
-				handler: function (event) {
-					this.currentPosition.position = POSITIONS.bottom;
-					return 'bottom';
-				}
-			},
-			left: {
-				// A button
-				which: 65,
-				handler: function (event) {
-					this.currentPosition.position = POSITIONS.left;
-					return 'left';
-				}
-			},
-			moveLeft: {
-				// -> button
-				which: 39,
-				handler: function (event) {
-
-				}
-			},
-			moveRight: {
-				// <- button
-				which: 37,
-				handler: function (event) {
-
-				}
-			}
+			'87': 'top', // W button
+			'68': 'right', // D button
+			'83': 'bottom', // S button
+			'65': 'left', // A button
+			'39': 'moveLeft', // -> button
+			'37': 'moveRight' // <- button
 		};
 
 		var POSITIONS = {
@@ -97,10 +57,12 @@ define([
 			});
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-			this.currentPosition = {
+			this.position = {
 				side: 0,
 				posFromLeft: 12,
-				position: POSITIONS.bottom
+				lastPos: 'bottom',
+				nextPos: 'bottom',
+				pos: POSITIONS.bottom,
 			};
 
 			this.diff = diff;
@@ -110,6 +72,8 @@ define([
 		}
 
 		Hero.prototype.eventControl = function (action) {
+			var self = this;
+
 			if ( action === 'on' ) {
 				action = 'addEvent';
 			}
@@ -119,20 +83,22 @@ define([
 
 			this.events = this.events || {
 				onKeydown: function (event) {
-					for ( var button in BUTTONS ) {
+					var position = BUTTONS[event.which];
 
-						if ( button.which === event.which ) {
-							button.handler.call(this, event);
+					if ( position ) {
+						// set new position
+						if ( self.position.lastPos === self.position.nextPos && position !== self.position.lastPos ) {
+							self.position.newPos = position;
 
 							// fire custom event of change position
 							var fireEvent = new Event(':hero-position');
 							document.dispatchEvent(fireEvent);
-							break;
 						}
+
 					}
 				},
 				heroPosition: function (event) {
-
+					self.updatePosition();
 				}
 			};
 
@@ -141,9 +107,9 @@ define([
 		};
 
 		Hero.prototype.addOnPosition = function () {
-			this.mesh.position.x = this.currentPosition.position.x;
-			this.mesh.position.y = this.currentPosition.position.y;
-			this.mesh.position.z = this.currentPosition.position.z;
+			this.mesh.position.x = this.position.pos.x;
+			this.mesh.position.y = this.position.pos.y;
+			this.mesh.position.z = this.position.pos.z;
 		};
 
 		Hero.prototype.animate = function () {
@@ -157,12 +123,35 @@ define([
 					sign = sign[1] ? -1 : 1;
 					self.mesh.rotation[dim] += (0.09*self.diff.get('diff') + 0.05) * sign;
 
-				})(self.currentPosition.position.rotation);
+				})(self.position.pos.rotation);
 			});
 		};
 
 		Hero.prototype.updatePosition = function () {
+			var self = this;
+			DataSource.addAnimation(function () {
+				var newCoords = POSITIONS[self.position.nextPosition];
+				if ( self.position.pos.x !== newCoords.x && self.position.pos.y !== newCoords.y ) {
+					var  newSystCoord = {
+						x: newCoords.x - self.position.pos.x,
+						y: newCoords.y - self.position.pos.y
+					};
 
+					var currPos = {
+						x: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow( newSystCoord.y / newSystCoord.x, 2 )),
+						y: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow( newSystCoord.x / newSystCoord.y, 2 ))
+					};
+
+					self.position.pos.x = ( currPos.x > newSystCoord.x ) ? newCoords.x : self.position.pos.x + currPos.x;
+					self.position.pos.y = ( currPos.y > newSystCoord.y ) ? newCoords.y : self.position.pos.y + currPos.y;
+
+					// console.log('change position')
+				}
+				else {
+					self.position.lastPos = self.position.nextPos;
+					DataSource.removeAnimation(this);
+				}
+			});
 		};
 
 		return Hero;

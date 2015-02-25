@@ -73,7 +73,6 @@ define([
 
 		Scene.prototype.animate = function() {
 			var self = this;
-
 			DataSource.addAnimation(function (delta, now) {
 				self.updateControls.call(self, delta, now);
 				self.updateSegments.call(self, delta, now);

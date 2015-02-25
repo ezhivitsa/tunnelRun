@@ -39,7 +39,8 @@ define([
 				heightSegments: 20,
 				width: 2,
 				height: 2,
-				depth: 2
+				depth: 2,
+				changePositionSpeed: 1
 			},
 
 			figureOptions: {

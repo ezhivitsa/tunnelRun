@@ -71,15 +71,14 @@ define([
 					handlers[elem][event] = {};
 					handlers[elem][event].actions = [];
 
-					handlers[elem][event].dispather = function () {
-						for ( var i = 0; i < handlers[elem][event].length; i++ ) {
-							handlers[elem][event][i].call(elem, event);
+					handlers[elem][event].dispather = function (e) {
+						for ( var i = 0; i < handlers[elem][event].actions.length; i++ ) {
+							handlers[elem][event].actions[i].call(elem, e);
 						}
 					};
 
 					elem.addEventListener(event, handlers[elem][event].dispather);
 				}
-
 				handlers[elem][event].actions.push(fn);
 			},
 			removeEvent: function (elem, event, fn) {
