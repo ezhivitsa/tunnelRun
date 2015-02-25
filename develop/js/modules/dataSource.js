@@ -84,7 +84,7 @@ define([
 			removeEvent: function (elem, event, fn) {
 				if ( !event && handlers[elem] ) {
 					// remove all events from element
-					for ( var e in handler[elem] ) {
+					for ( var e in handlers[elem] ) {
 						elem.removeEventListener(e, handlers[elem][e].dispather);
 					}
 
@@ -97,7 +97,7 @@ define([
 					elem.removeEventListener(event, handler[elem][event].dispather);
 					delete handler[elem][event];
 
-					if ( !Object.keys(handler[elem]).length ) {
+					if ( !Object.keys(handlers[elem]).length ) {
 						delete handlers[elem];
 					}
 
