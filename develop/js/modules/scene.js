@@ -8,7 +8,7 @@ define([
 	function (THREE, DataSource, consts, Obstacle) {
 		'use strict';
 
-		var back = THREE.ImageUtils.loadTexture('/img/WP4YLUJW.jpg');
+		var back = THREE.ImageUtils.loadTexture(consts.theme.magma.back);
 
 		function Scene(renderer, camera, diff) {
 			this.renderer = renderer;
@@ -69,6 +69,9 @@ define([
 			this.scene.add(this.ambientLight);
 
 			this.scene.add(this.spotLight);
+
+			// var axes = new THREE.AxisHelper(50);
+			// this.scene.add(axes);
 		};
 
 		Scene.prototype.animate = function() {
