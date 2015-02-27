@@ -11,8 +11,9 @@ define([
 			currentSegmentPosition = null,
 			distance = 0;
 
+		var caster = new THREE.Raycaster();
+
 		function Collision() {
-			this.caster = new THREE.Raycaster();
 
 			this.rays = {
 				forward: new THREE.Vector3(0, 0, -1),
@@ -31,10 +32,22 @@ define([
 			};
 		};
 
-		Collision.prototype.currentPosition = function() {
-			this.caster.set(this.hero.mesh.position, this.rays.forward);
+		var obstacleCollision = function(position,obstacles,ray,event) {
+			caster.set(position, ray);
+			var collision = caster.intersectObjects(obstacles)[0];
+			console.log(collision)
+			if (collision && collision.distance <= consts.hero.radius) {
+				var fireEvent = new Event(event);
+				document.dispatchEvent(fireEvent);
+				return true;
+			}
+			return false;
+		};
 
-			nextSegment = this.caster.intersectObjects(this.meshs)[0];
+		Collision.prototype.currentPosition = function() {
+			caster.set(this.hero.mesh.position, this.rays.forward);
+
+			nextSegment =caster.intersectObjects(this.meshs)[0];
 			distance = nextSegment.distance;
 			currentSegmentPosition = this.meshs.indexOf(nextSegment.object) + 1;
 
@@ -68,25 +81,31 @@ define([
 		Collision.prototype.segmentCollision = function() {
 			var borderX = this.meshs[currentSegmentPosition].position.x + consts.segmentSize.width/2,
 				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height/2;
-			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius >= borderX ) {
+			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius > borderX ) {
 				var fireEvent = new Event(this.hero.mesh.position.x > 0 ? 'hero.stop-right' :'hero.stop-left');
 				document.dispatchEvent(fireEvent);
-			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius >= borderY ) {
+			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius > borderY ) {
 				var fireEvent = new Event(this.hero.mesh.position.y > 0 ? 'hero.stop-up' :'hero.stop-down');
 				document.dispatchEvent(fireEvent);
 			}
 		}
 
 		Collision.prototype.runCollision = function () {
-			// if (this.hero.position.lastPos != this.hero.position.nextPos) {
-			// 	return;
-			// }
+			if (this.hero.position.lastPos != this.hero.position.nextPos) {
+				return;
+			}
 
-			// if (this.hero.position.lastPos == )
-			// for (var key in this.rays) {
-			// 	this.caster.set(this.hero.mesh.position, this.rays[key]);
+			if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[plane][key],'hero.stop-' + key)) {
+				return;
+			}
 
-			// }
+			var plane = (this.hero.position.lastPos == 'top' || this.hero.position.lastPos == 'bottom') ? 'horizontal' : 'vertical';
+
+			for (var key in this.rays[plane]) {
+				if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[plane][key],'hero.stop-' + key)) {
+					return;
+				}
+			}
 		};
 
 		Collision.prototype.update = function() {
@@ -108,6 +127,7 @@ define([
 				}
 
 				self.segmentCollision();
+				self.runCollision();
 			});
 		};
 
