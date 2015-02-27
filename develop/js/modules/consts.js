@@ -3,7 +3,7 @@ define([
 	function () {
 		return {
 			maxSpeed: 30,
-			minSpeed: 10,
+			minSpeed: 1,
 			theme: {
 				magma: {
 					back: "/img/WP4YLUJW.jpg",

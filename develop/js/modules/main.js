@@ -47,7 +47,7 @@ define([
 			scene.addHero(hero);
 			scene.render();
 
-			collision.init(scene.getSegments(),hero);
+			collision.init(scene.getSegments(),diff,hero);
 
 			scene.animate();
 			hero.animate();

@@ -1,37 +1,53 @@
 define([
-	'three',
+		'three',
 
-	'consts',
-	'dataSource'
-], 
-	function (THREE, consts, DataSource) {
+		'consts',
+		'dataSource'
+	],
+	function(THREE, consts, DataSource) {
 		'use strict';
+
+		var nextSegment = null,
+			currentSegmentPosition = null,
+			distance = 0;
 
 		function Collision() {
 			this.caster = new THREE.Raycaster();
 
 			this.rays = {
 				forward: new THREE.Vector3(0, 0, -1),
-				right: new THREE.Vector3(1, 0, 0),
-				left: new THREE.Vector3(-1, 0, 0),
-				top: new THREE.Vector3(0, 1, 0),
-				bottom: new THREE.Vector3(0, -1, 0)
-			}
+				horizontal: {
+					right: new THREE.Vector3(1, 0, 0),
+					left: new THREE.Vector3(-1, 0, 0),
+					'forward-right': new THREE.Vector3(1, 0, -1),
+					'forward-left': new THREE.Vector3(-1, 0, -1)
+				},
+				vertical: {
+					up: new THREE.Vector3(0, 1, 0),
+					down: new THREE.Vector3(0, -1, 0),
+					'forward-up': new THREE.Vector3(0, 1, -1),
+					'forward-down': new THREE.Vector3(0, -1, -1)
+				}
+			};
 		};
 
-		Collision.prototype.currentPosition = function () {
-			this.caster.set(this.hero.position, this.rays.forward);
+		Collision.prototype.currentPosition = function() {
+			this.caster.set(this.hero.mesh.position, this.rays.forward);
 
-			var collisions = this.caster.intersectObjects(this.meshs);
+			nextSegment = this.caster.intersectObjects(this.meshs)[0];
+			distance = nextSegment.distance;
+			currentSegmentPosition = this.meshs.indexOf(nextSegment.object) + 1;
 
-			// console.log(collisions);
+			this.updated = false;
 		};
 
-		Collision.prototype.init = function(segments, hero) {
+		Collision.prototype.init = function(segments, diff, hero) {
 			this.segments = segments;
 			this.meshs = [];
 
+			this.diff = diff;
 			this.hero = hero;
+			this.updated = true;
 
 			for (var i in this.segments) {
 				this.meshs.push(this.segments[i].mesh);
@@ -39,11 +55,60 @@ define([
 
 		};
 
-		Collision.prototype.update = function () {		
+		Collision.prototype.getCurrentSegment = function(force) {
+			force && this.currentPosition();
+			return this.segments[currentSegmentPosition];
+		};
+
+		Collision.prototype.getDistance = function(force) {
+			force && this.currentPosition();
+			return distance;
+		};
+
+		Collision.prototype.segmentCollision = function() {
+			var borderX = this.meshs[currentSegmentPosition].position.x + consts.segmentSize.width/2,
+				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height/2;
+			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius >= borderX ) {
+				var fireEvent = new Event(this.hero.mesh.position.x > 0 ? 'hero.stop-right' :'hero.stop-left');
+				document.dispatchEvent(fireEvent);
+			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius >= borderY ) {
+				var fireEvent = new Event(this.hero.mesh.position.y > 0 ? 'hero.stop-up' :'hero.stop-down');
+				document.dispatchEvent(fireEvent);
+			}
+		}
+
+		Collision.prototype.runCollision = function () {
+			// if (this.hero.position.lastPos != this.hero.position.nextPos) {
+			// 	return;
+			// }
+
+			// if (this.hero.position.lastPos == )
+			// for (var key in this.rays) {
+			// 	this.caster.set(this.hero.mesh.position, this.rays[key]);
+
+			// }
+		};
+
+		Collision.prototype.update = function() {
 			var self = this;
-			DataSource.addAnimation(function () {				
-				self.currentPosition();
-			});	
+
+			DataSource.addAnimation(function(delta, now) {
+				self.updated && self.currentPosition();
+
+				distance -= self.diff.get('speed') * delta;
+				if (distance < 0.1) {
+					distance += consts.segmentSize.depth;
+					for (var i = 0; i < 4; i++) {
+						self.meshs[currentSegmentPosition].material.materials[i].wireframe = false;
+					}
+					currentSegmentPosition = currentSegmentPosition ? (currentSegmentPosition - 1) : self.meshs.length - 1;
+					for (var i = 0; i < 4; i++) {
+						self.meshs[currentSegmentPosition].material.materials[i].wireframe = true;
+					}
+				}
+
+				self.segmentCollision();
+			});
 		};
 
 		return Collision;

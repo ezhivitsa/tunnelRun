@@ -71,7 +71,8 @@ define([
 					// color: 0xbe34ba,
 					emissive: emissive,
 					side: THREE.BackSide,
-					opacity: 0
+					opacity: 0,
+					// wireframe: true
 				}),
 				new THREE.MeshLambertMaterial({
 					transparent: true, 
