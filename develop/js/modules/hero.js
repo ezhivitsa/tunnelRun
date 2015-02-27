@@ -8,39 +8,39 @@ define([
 		'use strict';
 
 		var BUTTONS = {
-			'87': 'top', // W button
-			'68': 'right', // D button
-			'83': 'bottom', // S button
-			'65': 'left', // A button
-			'39': 'moveLeft', // -> button
-			'37': 'moveRight' // <- button
+			'87:change': 'top', // W button
+			'68:change': 'right', // D button
+			'83:change': 'bottom', // S button
+			'65:change': 'left', // A button
+			'39:move': 'moveLeft', // -> button
+			'37:move': 'moveRight' // <- button
 		};
 
 		var POSITIONS = {
 			top: {
 				x: 0,
-				y: 14,
+				y: 11,
 				z: -3,
 				moveDim: 'x',
 				rotation: 'x'
 			},
 			right: {
 				x: 11,
-				y: 3,
+				y: 0,
 				z: -3,
 				moveDim: 'y',
 				rotation: '-y'
 			},
 			bottom: {
 				x: 0,
-				y: -8,
+				y: -11,
 				z: -3,
 				moveDim: 'x',
 				rotation: '-x'
 			},
 			left: {
 				x: -11,
-				y: 3,
+				y: 0,
 				z: -3,
 				moveDim: 'y',
 				rotation: 'y'
@@ -83,27 +83,20 @@ define([
 
 			this.events = this.events || {
 				onKeydown: function (event) {
-					var position = BUTTONS[event.which];
+					var position = BUTTONS[event.which + ':change'];
 
 					if ( position ) {
 						// set new position
 						if ( self.position.lastPos === self.position.nextPos && position !== self.position.lastPos ) {
 							self.position.nextPos = position;
-
-							// fire custom event of change position
-							var fireEvent = new Event(':hero-position');
-							document.dispatchEvent(fireEvent);
+							self.updatePosition();
 						}
-
 					}
-				},
-				heroPosition: function (event) {
-					self.updatePosition();
 				}
 			};
 
 			DataSource[action](document, 'keydown', this.events.onKeydown);
-			DataSource[action](document, ':hero-position', this.events.heroPosition);
+			// DataSource[action](document, ':hero-position', this.events.heroPosition);
 		};
 
 		Hero.prototype.addOnPosition = function () {
@@ -165,10 +158,20 @@ define([
 						else {
 							self.position.pos.y -= currPos.y;
 						}
-					}
+					}					
+
+					// fire custom event of change position of the hero
+					var fireEvent = new Event(':hero-position');
+					fireEvent.heroPosition = {
+						x: self.position.pos.x,
+						y: self.position.pos.y,
+						movement: self.position.nextPos
+					};
+					document.dispatchEvent(fireEvent);
 				}
 				else {
 					self.position.lastPos = self.position.nextPos;
+					self.setPosition(POSITIONS[self.position.nextPos]);
 					DataSource.removeAnimation(anim);
 				}
 
