@@ -20,10 +20,36 @@ define([
 			this.scene = new THREE.Scene();
 
 			this.segments = [];
+
+			var self = this;
+
+			var debugaxis = function(axisLength){
+			    //Shorten the vertex function
+			    function v(x,y,z){ 
+			        return new THREE.Vector3(x,y,z); 
+			    }
+			    
+			    //Create axis (point1, point2, colour)
+			    function createAxis(p1, p2, color) {
+		            var line, lineGeometry = new THREE.Geometry(),
+		            lineMat = new THREE.LineBasicMaterial({color: color, lineWidth: 1});
+		            lineGeometry.vertices.push(p1, p2);
+		            line = new THREE.Line(lineGeometry, lineMat);
+		            self.scene.add(line);
+			    }
+			    
+			    createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
+			    createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
+			    createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
+			};
+
+			//To use enter the axis length
+			debugaxis(100);
 		};
 
 		Scene.prototype.init = function() {
 			this.camera.lookAt(this.scene.position);
+			this.camera.position.y = 2;
 
 			// Init controls
 			this.controls = new THREE.TrackballControls(this.camera);
@@ -55,12 +81,48 @@ define([
 			sphere.position.z = -250;
 
 			this.scene.add(sphere);
+			this.eventControl('on');
+		};
+
+		Scene.prototype.eventControl = function (action) {
+			var self = this;
+
+			if ( action === 'on' ) {
+				action = 'addEvent';
+			}
+			else {
+				action = 'removeEvent';
+			}
+
+			this.events = this.events || {
+				heroPosition: function (event) {
+					var camX = 0,
+						camY = 0;
+
+					switch (event.heroPosition.movement) {
+						case 'bottom':
+							camX = 0;
+							camY += 8;
+							break;
+						case 'top':
+							camX = 0;
+							camY = 0;
+							break;
+					}
+					self.camera.position.x = event.heroPosition.x * camX;
+					self.camera.position.y = event.heroPosition.y * camY;
+					
+					console.log(event.heroPosition);
+				}
+			};
+
+			DataSource[action](document, ':hero-position', this.events.heroPosition);
 		};
 
 		Scene.prototype.render = function() {
 			for (var i = 0; i < this.segments.length; i++)
 				(function(seg, diff) {
-					seg.mesh.position.y = 3;
+					// seg.mesh.position.y = 3;
 					seg.mesh.position.z = -380 + i * 11.99;
 					seg.mesh.receiveShadow = consts.enableShadow;
 
