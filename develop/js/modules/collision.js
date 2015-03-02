@@ -35,7 +35,7 @@ define([
 		var obstacleCollision = function(position,obstacles,ray,event) {
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
-			console.log(collision)
+			// console.log(collision)
 			if (collision && collision.distance <= consts.hero.radius) {
 				var fireEvent = new Event(event);
 				document.dispatchEvent(fireEvent);
@@ -95,7 +95,7 @@ define([
 				return;
 			}
 
-			if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[plane][key],'hero.stop-' + key)) {
+			if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays.forward,'hero.stop-forward')) {
 				return;
 			}
 
