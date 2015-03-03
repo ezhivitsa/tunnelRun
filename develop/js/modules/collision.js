@@ -117,13 +117,13 @@ define([
 				distance -= self.diff.get('speed') * delta;
 				if (distance < 0.1) {
 					distance += consts.segmentSize.depth;
-					for (var i = 0; i < 4; i++) {
-						self.meshs[currentSegmentPosition].material.materials[i].wireframe = false;
-					}
+					// for (var i = 0; i < 4; i++) {
+					// 	self.meshs[currentSegmentPosition].material.materials[i].wireframe = false;
+					// }
 					currentSegmentPosition = currentSegmentPosition ? (currentSegmentPosition - 1) : self.meshs.length - 1;
-					for (var i = 0; i < 4; i++) {
-						self.meshs[currentSegmentPosition].material.materials[i].wireframe = true;
-					}
+					// for (var i = 0; i < 4; i++) {
+					// 	self.meshs[currentSegmentPosition].material.materials[i].wireframe = true;
+					// }
 				}
 
 				self.segmentCollision();

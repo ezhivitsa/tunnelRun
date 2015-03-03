@@ -8,7 +8,67 @@
 </head>
 <body>
 	
-	<div id="WebGLCanvas"></div>
+	<div class="game-field">
+		<div id="WebGLCanvas"></div>
+		<div class="more-game">
+			<h3 class="game-text">Push Play to start</h3>
+			<div class="score">1234</div>
+			<ul class="game-controls">
+				<li><a id="paly-btn" href="#">Play</a></li>
+				<li><a id="restart-btn" style="display: none;" href="#">Restart</a></li>
+			</ul>
+			<div class="game-info">
+				Push: 
+				<ul class="keys">
+					<li>						
+						<span class="up">
+							Up Arrow
+						</span> to move up on vertical
+					</li>
+					<li>
+						<span class="down">
+							Down Arrow
+						</span> to move down on vertica
+					</li>
+					<li>
+						<span class="left">
+							Left Arrow
+						</span> to move left on horizontal
+					</li>
+					<li>
+						<span class="right">
+							Right Arrow
+						</span> to move right on horizontal
+					</li>
+					<li>
+						<span class="w-pad">
+							W
+						</span> to move on upper plane
+					</li>
+					<li>
+						<span class="a-pad">
+							A
+						</span> to move on left plane
+					</li>
+					<li>
+						<span class="s-pad">
+							S
+						</span> to move on bottom plane
+					</li>
+					<li>
+						<span class="d-pad">
+							D
+						</span> to move on right plane
+					</li>
+					<li>
+						<span class="d-pad">
+							space
+						</span> to pause
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	
 	<!-- build:js() js/require.js -->
 	<script data-main="js/script.min.js" src="js/vendor/requirejs/require.js"></script>

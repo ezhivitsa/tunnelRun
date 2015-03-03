@@ -20,8 +20,8 @@ define([
 		THREE.DefaultLoadingManager.onLoad = function (  ) {
 
 			var pageSize = {
-					width: window.innerWidth - 10,
-					height: window.innerHeight - 20
+					width: 1024,
+					height: 768
 				},
 				segmentOptions = {
 					width: 24,

@@ -4,6 +4,138 @@ body
 
     overflow: hidden;
 
+    margin: 0;
+    padding: 0;
+
     color: white;
+    background-color: #eee;
+}
+
+.game-field
+{
+    font-size: 0;
+
+    width: 1324px;
+    height: 768px;
+}
+
+#WebGLCanvas
+{
+    display: inline-block;
+
+    width: 1024px;
+    height: 100%;
+
+    vertical-align: top;
+}
+
+.more-game
+{
+    font-size: 10px;
+
+    display: inline-block;
+
+    width: 300px;
+    height: 100%;
+
+    vertical-align: top;
+
+    background: #711e12;
+}
+
+.game-text
+{
+    font-size: 35px;
+
+    box-sizing: border-box;
+    height: 125px;
+    margin: 0;
+    padding: 20px;
+}
+
+.score
+{
+    font-size: 20px;
+
+    height: 35px;
+    padding: 5px;
+
+    text-align: center;
+}
+
+.game-controls
+{
+    height: 130px;
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
+}
+
+.game-controls li
+{
+    display: block;
+
+    padding: 5px 20px;
+}
+
+.game-controls li a
+{
+    font-size: 25px;
+    line-height: 40px;
+
+    display: block;
+
+    text-align: center;
+    text-decoration: none;
+
+    color: #000;
+    background-color: #eee;
+}
+
+.game-info
+{
+    font-size: 15px;
+
+    height: 465px;
+    padding-left: 20px;
+}
+
+.keys
+{
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
+}
+
+.keys li
+{
+    display: block;
+
+    padding: 5px 0;
+}
+
+.keys li span
+{
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+
+    display: inline-block;
+
+    min-width: 25px;
+    padding-top: 5px;
+    padding-right: 3px;
+    padding-bottom: 5px;
+    padding-left: 3px;
+
+    text-align: center;
+
+    color: #000;
+    border-top: #ccc 2px solid;
+    border-right: #aaa 4px solid;
+    border-bottom: #888 5px solid;
+    border-left: #bbb 3px solid;
     background-color: #eee;
 }
