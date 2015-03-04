@@ -106,7 +106,31 @@ define([
 					return;
 				}
 			}
+
+			var obstacleIteration = 0;
+			switch(this.hero.position.lastPos) {
+				case 'right':
+					obstacleIteration = consts.obstacleOptions.width - 1;
+					break;
+				case 'top': 
+					obstacleIteration = (consts.obstacleOptions.width - 1) * 2;
+					break;
+				case 'left':
+					obstacleIteration = (consts.obstacleOptions.width - 1) * 3;
+			}
+
+			if (this.segments[currentSegmentPosition].blockMatrix[obstacleIteration]==2) {
+				var fireEvent = new Event('hero.abyss-die');
+				document.dispatchEvent(fireEvent);
+			}
+
 		};
+
+		Collision.prototype.abyssDetector = function() {
+			if (this.hero.position.lastPos != this.hero.position.nextPos) {
+				return;
+			}
+		}
 
 		Collision.prototype.update = function() {
 			var self = this;

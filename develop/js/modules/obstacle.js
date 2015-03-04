@@ -80,21 +80,21 @@ define(['three', 'consts', 'figure'], function(THREE, consts, Figure) {
 			case 0:
 				figure = figureFactory.getHorizontal(length);
 				figure.position.y = -(this.vSize - 1);
-				figure.position.x = -this.vSize + length + (pos - length + 1) * 2;
+				figure.position.x = -this.vSize + length + (pos - length) * 2;
 				break;
 			case 1:
 				figure = figureFactory.getVertical(length);
-				figure.position.y = -this.vSize + length + (pos - length + 1) * 2;
+				figure.position.y = -this.vSize + length + (pos - length) * 2;
 				figure.position.x = (this.vSize - 1);
 				break;
 			case 2:
 				figure = figureFactory.getHorizontal(length);
 				figure.position.y = (this.vSize - 1);
-				figure.position.x = this.vSize - length - (pos - length + 1) * 2;
+				figure.position.x = this.vSize - length - (pos - length) * 2;
 				break;
 			default:
 				figure = figureFactory.getVertical(length);
-				figure.position.y = this.vSize - length - (pos - length + 1) * 2;
+				figure.position.y = this.vSize - length - (pos - length) * 2;
 				figure.position.x = -(this.vSize - 1);
 		}
 

@@ -6,6 +6,10 @@ define([
 		'use strict';
 
 		function Difficulty () {
+			this.init();
+		};
+
+		Difficulty.prototype.init = function () {			
 			this.diff = 0;
 			this.iteration = 0;
 			this.speed = consts.minSpeed;
