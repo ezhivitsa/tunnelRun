@@ -108,7 +108,7 @@ define([
 			}
 
 			var obstacleIteration = 0;
-			switch(this.hero.position.lastPos) {
+			switch(this.hero.opts.lastPos) {
 				case 'right':
 					obstacleIteration = consts.obstacleOptions.width - 1;
 					break;
@@ -127,7 +127,7 @@ define([
 		};
 
 		Collision.prototype.abyssDetector = function() {
-			if (this.hero.position.lastPos != this.hero.position.nextPos) {
+			if (this.hero.opts.lastPos != this.hero.position.nextPos) {
 				return;
 			}
 		}
