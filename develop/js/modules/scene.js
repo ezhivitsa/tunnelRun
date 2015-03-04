@@ -97,23 +97,11 @@ define([
 
 			this.events = this.events || {
 				heroPosition: function (event) {
-					var camX = 0,
-						camY = 0;
-
-					switch (event.heroPosition.movement) {
-						case 'bottom':
-							camX = 0;
-							camY += 8;
-							break;
-						case 'top':
-							camX = 0;
-							camY = 0;
-							break;
-					}
+					var camX = -2/11,
+						camY = -2/11;
+						
 					self.camera.position.x = event.heroPosition.x * camX;
 					self.camera.position.y = event.heroPosition.y * camY;
-					
-					console.log(event.heroPosition);
 				}
 			};
 

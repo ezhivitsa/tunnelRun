@@ -12,8 +12,8 @@ define([
 			'68:change': 'right', // D button
 			'83:change': 'bottom', // S button
 			'65:change': 'left', // A button
-			'39:move': 'moveLeft', // -> button
-			'37:move': 'moveRight' // <- button
+			'39:move': 'left', // -> button
+			'37:move': 'right' // <- button
 		};
 
 		var POSITIONS = {
@@ -22,28 +22,36 @@ define([
 				y: 11,
 				z: -3,
 				moveDim: 'x',
-				rotation: 'x'
+				rotation: {
+					z: 0
+				}
 			},
 			right: {
 				x: 11,
 				y: 0,
 				z: -3,
-				moveDim: 'y',
-				rotation: '-y'
+				moveDim: '-y',
+				rotation: {
+					z: -Math.PI / 2
+				}
 			},
 			bottom: {
 				x: 0,
 				y: -11,
 				z: -3,
-				moveDim: 'x',
-				rotation: '-x'
+				moveDim: '-x',
+				rotation: {
+					z: Math.PI
+				}
 			},
 			left: {
 				x: -11,
 				y: 0,
 				z: -3,
 				moveDim: 'y',
-				rotation: 'y'
+				rotation: {
+					z: Math.PI / 2
+				}
 			}
 		};
 
@@ -60,6 +68,7 @@ define([
 			this.position = {
 				lastPos: 'bottom',
 				nextPos: 'bottom',
+				rot: 0,
 				pos: {}
 			};
 
@@ -83,11 +92,15 @@ define([
 
 			this.events = this.events || {
 				onKeydown: function (event) {
-					var position = BUTTONS[event.which + ':change'];
+					var movement = BUTTONS[event.which + ':move'],
+						position = BUTTONS[event.which + ':change']
 
-					if ( position ) {
-						// set new position
-						if ( self.position.lastPos === self.position.nextPos && position !== self.position.lastPos ) {
+					if ( self.position.lastPos === self.position.nextPos && position !== self.position.lastPos ) {
+						if ( movement ) {
+							// move hero
+						}
+						else if ( position ) {
+							// set new position
 							self.position.nextPos = position;
 							self.updatePosition();
 						}
@@ -108,15 +121,15 @@ define([
 		Hero.prototype.animate = function () {
 			var self = this;
 
-			DataSource.addAnimation(function () {
+			DataSource.addAnimation(function (delta, now) {
 				(function (rot) {
 					var sign = rot.match(signRegExp),
 						dim = sign[2];
 
 					sign = sign[1] ? -1 : 1;
-					self.mesh.rotation[dim] += (0.09*self.diff.get('diff') + 0.05) * sign;
-
-				})(self.position.pos.rotation);
+					self.position.rot += self.diff.get('speed') * delta / consts.hero.radius;
+					self.mesh.rotation[dim] = self.position.rot * sign;
+				})(self.position.pos.moveDim);
 			});
 		};
 
@@ -190,8 +203,8 @@ define([
 			this.position.pos.y = (pos.y) ? pos.y : 0;
 			this.position.pos.z = (pos.z) ? pos.z : 0;
 
-			this.position.pos.moveDim = (pos.moveDim) ? pos.moveDim : "x";
-			this.position.pos.rotation = (pos.rotation) ? pos.rotation : "-x";
+			this.position.pos.moveDim = (pos.moveDim) ? pos.moveDim : "-x";
+			this.mesh.rotation.set(0, 0, (pos.rotation.z) ? pos.rotation.z : 0);
 		};
 
 		return Hero;
