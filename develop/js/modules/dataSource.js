@@ -21,7 +21,6 @@ define([
 				for (var i = 0; i < animations.length; i++) {
 					animations[i](deltaMsec/10, nowMsec/10);
 				}
-
 				stats.end();
 			});
 		}

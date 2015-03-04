@@ -91,7 +91,7 @@ define([
 		}
 
 		Collision.prototype.runCollision = function () {
-			if (this.hero.position.lastPos != this.hero.position.nextPos) {
+			if (this.hero.opts.lastPos != this.hero.opts.nextPos) {
 				return;
 			}
 
@@ -99,7 +99,7 @@ define([
 				return;
 			}
 
-			var plane = (this.hero.position.lastPos == 'top' || this.hero.position.lastPos == 'bottom') ? 'horizontal' : 'vertical';
+			var plane = (this.hero.opts.lastPos == 'top' || this.hero.opts.lastPos == 'bottom') ? 'horizontal' : 'vertical';
 
 			for (var key in this.rays[plane]) {
 				if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[plane][key],'hero.stop-' + key)) {
