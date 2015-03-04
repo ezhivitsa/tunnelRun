@@ -15,6 +15,7 @@ define([
 			this.renderer.shadowMapEnabled = consts.enableShadow;
 			// this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
 			// this.renderer.shadowMapDebug = true;
+			canvasElement.innerHTML = "";
 			canvasElement.appendChild(this.renderer.domElement);
 		}
 

@@ -17,16 +17,24 @@ body
 
     width: 1324px;
     height: 768px;
+    margin: 0 auto;
+
+    background: #711e12;
 }
 
 #WebGLCanvas
 {
+    font-size: 40px;
+    line-height: 768px;
+
     display: inline-block;
 
     width: 1024px;
     height: 100%;
 
+    text-align: center;
     vertical-align: top;
+    text-transform: uppercase;
 }
 
 .more-game
@@ -39,8 +47,6 @@ body
     height: 100%;
 
     vertical-align: top;
-
-    background: #711e12;
 }
 
 .game-text
@@ -72,14 +78,17 @@ body
     list-style-type: none;
 }
 
-.game-controls li
+.game-controls
 {
+    font-size: 20px;
+
     display: block;
 
+    box-sizing: border-box;
     padding: 5px 20px;
 }
 
-.game-controls li a
+.game-controls #paly-restart-btn
 {
     font-size: 25px;
     line-height: 40px;
@@ -91,6 +100,18 @@ body
 
     color: #000;
     background-color: #eee;
+}
+.game-controls .theme-container
+{
+    padding: 10px 5px;
+}
+
+.game-controls #theme
+{
+    width: 150px;
+    padding: 5px;
+
+    background: #eee;
 }
 
 .game-info

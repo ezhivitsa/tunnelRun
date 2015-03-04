@@ -55,7 +55,7 @@ define([
 
 			collision.update();
 
-			DataSource.startAnimation();
+			// DataSource.startAnimation();
 		};
 	}
 );

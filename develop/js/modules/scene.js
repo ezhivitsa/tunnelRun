@@ -9,6 +9,7 @@ define([
 		'use strict';
 
 		var back = THREE.ImageUtils.loadTexture(consts.theme.magma.back);
+		back.minFilter = THREE.LinearFilter;
 
 		function Scene(renderer, camera, diff) {
 			this.renderer = renderer;
