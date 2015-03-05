@@ -1,11 +1,11 @@
 define([
-	'three',
+		'three',
 
-	'dataSource',
-	'consts',
-	'obstacle'
-],
-	function (THREE, DataSource, consts, Obstacle) {
+		'dataSource',
+		'consts',
+		'obstacle'
+	],
+	function(THREE, DataSource, consts, Obstacle) {
 		'use strict';
 
 		var back = THREE.ImageUtils.loadTexture(consts.theme.magma.back);
@@ -24,31 +24,35 @@ define([
 
 			var self = this;
 
-			var debugaxis = function(axisLength){
-			    //Shorten the vertex function
-			    function v(x,y,z){ 
-			        return new THREE.Vector3(x,y,z); 
-			    }
-			    
-			    //Create axis (point1, point2, colour)
-			    function createAxis(p1, p2, color) {
-		            var line, lineGeometry = new THREE.Geometry(),
-		            lineMat = new THREE.LineBasicMaterial({color: color, lineWidth: 1});
-		            lineGeometry.vertices.push(p1, p2);
-		            line = new THREE.Line(lineGeometry, lineMat);
-		            self.scene.add(line);
-			    }
-			    
-			    createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
-			    createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
-			    createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
+			var debugaxis = function(axisLength) {
+				//Shorten the vertex function
+				function v(x, y, z) {
+					return new THREE.Vector3(x, y, z);
+				}
+
+				//Create axis (point1, point2, colour)
+				function createAxis(p1, p2, color) {
+					var line, lineGeometry = new THREE.Geometry(),
+						lineMat = new THREE.LineBasicMaterial({
+							color: color,
+							lineWidth: 1
+						});
+					lineGeometry.vertices.push(p1, p2);
+					line = new THREE.Line(lineGeometry, lineMat);
+					self.scene.add(line);
+				}
+
+				createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
+				createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
+				createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
 			};
 
 			//To use enter the axis length
 			debugaxis(100);
 		};
 
-		Scene.prototype.init = function() {
+		Scene.prototype.init = function(canvasElement) {
+			this.canvasElement = canvasElement;
 			this.camera.lookAt(this.scene.position);
 			this.camera.position.y = 2;
 
@@ -85,34 +89,46 @@ define([
 			this.eventControl('on');
 		};
 
-		Scene.prototype.eventControl = function (action) {
+		Scene.prototype.eventControl = function(action) {
 			var self = this;
 
-			if ( action === 'on' ) {
+			if (action === 'on') {
 				action = 'addEvent';
-			}
-			else {
+			} else {
 				action = 'removeEvent';
 			}
 
 			this.events = this.events || {
-				heroPosition: function (event) {
-					var camX = -2/11,
-						camY = -2/11;
-						
+				heroPosition: function(event) {
+					var camX = -2 / 11,
+						camY = -2 / 11;
+
 					self.camera.position.x = event.heroPosition.x * camX;
 					self.camera.position.y = event.heroPosition.y * camY;
+				},
+				reinit: function() {
+					self.canvasElement.style.opacity = 0;
+
+					for (var i = 0; i < self.segments.length; i++) {
+						(function(segment, pos, diff, self) {
+							pos.z = -380 + i * (consts.segmentSize.depth - 0.01);
+							segment.generateMatrix(diff);
+							self.obstacle.refreshSegment(segment.mesh, segment.blockMatrix);
+						})(self.segments[i], self.segments[i].mesh.position, self.diff.get('diff'), self);
+					}
+
+					self.canvasElement.style.opacity = 1;
 				}
 			};
 
-			DataSource[action](document, ':hero-position', this.events.heroPosition);
+			DataSource[action](document, ':hero-position', this.events.heroPosition)[action](document, 'restart', this.events.reinit);
 		};
 
 		Scene.prototype.render = function() {
 			for (var i = 0; i < this.segments.length; i++)
 				(function(seg, diff) {
 					// seg.mesh.position.y = 3;
-					seg.mesh.position.z = -380 + i * 11.99;
+					seg.mesh.position.z = -380 + i * (consts.segmentSize.depth - 0.01);
 					seg.mesh.receiveShadow = consts.enableShadow;
 
 				})(this.segments[i], this.diff);
@@ -127,7 +143,7 @@ define([
 
 		Scene.prototype.animate = function() {
 			var self = this;
-			DataSource.addAnimation(function (delta, now) {
+			DataSource.addAnimation(function(delta, now) {
 				self.updateControls.call(self, delta, now);
 				self.updateSegments.call(self, delta, now);
 			});

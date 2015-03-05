@@ -4,6 +4,12 @@ define([
 		return {
 			maxSpeed: 30,
 			minSpeed: 5,
+
+			buttonsText: {
+				play: 'Play',
+				restart: 'Restart'
+			},
+
 			theme: {
 				magma: {
 					back: "/img/WP4YLUJW.jpg",

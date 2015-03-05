@@ -10,7 +10,7 @@ define([
 		};
 
 		Difficulty.prototype.init = function () {			
-			this.diff = 0;
+			this.diff = 1;
 			this.iteration = 0;
 			this.speed = consts.minSpeed;
 			this.fps = 60;

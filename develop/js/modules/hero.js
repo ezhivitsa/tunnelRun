@@ -1,10 +1,10 @@
 define([
-	'three',
+		'three',
 
-	'consts',
-	'dataSource'
-],
-	function (THREE, consts, DataSource) {
+		'consts',
+		'dataSource'
+	],
+	function(THREE, consts, DataSource) {
 		'use strict';
 
 		var BUTTONS = {
@@ -58,7 +58,7 @@ define([
 		var signRegExp = /(-?)(\w+)/;
 
 		function Hero(diff) {
-			this.geometry =  new THREE.SphereGeometry( consts.hero.radius, consts.hero.widthSegments, consts.hero.heightSegments );
+			this.geometry = new THREE.SphereGeometry(consts.hero.radius, consts.hero.widthSegments, consts.hero.heightSegments);
 			this.material = new THREE.MeshLambertMaterial({
 				color: 0xffff00,
 				shading: THREE.FlatShading
@@ -72,57 +72,73 @@ define([
 				pos: {}
 			};
 
-			this.setPosition(POSITIONS.bottom);
+			this.init(diff);
 
-			this.diff = diff;
-
-			this.addOnPosition();
 			this.eventControl('on');
 		}
 
-		Hero.prototype.eventControl = function (action) {
+		Hero.prototype.init = function(obj) {
+			this.setPosition(POSITIONS.bottom);
+			console.log(this);
+
+			this.diff = obj.diff;
+
+			this.addOnPosition();
+		};
+
+		Hero.prototype.eventControl = function(action) {
 			var self = this;
 
-			if ( action === 'on' ) {
+			if (action === 'on') {
 				action = 'addEvent';
-			}
-			else {
+			} else {
 				action = 'removeEvent';
 			}
 
 			this.events = this.events || {
-				onKeydown: function (event) {
+				onKeydown: function(event) {
 					var movement = BUTTONS[event.which + ':move'],
 						position = BUTTONS[event.which + ':change']
 
-					if ( self.position.lastPos === self.position.nextPos && position !== self.position.lastPos ) {
-						if ( movement ) {
+					if (self.position.lastPos === self.position.nextPos && position !== self.position.lastPos) {
+						if (movement) {
 							// move hero
-						}
-						else if ( position ) {
+						} else if (position) {
 							// set new position
 							self.position.nextPos = position;
 							self.updatePosition();
 						}
 					}
+				},
+				reinit: function(event) {
+					self.init.call(self, event);
+					var fireEvent = new Event(':hero-position');
+					fireEvent.heroPosition = {
+						x: self.position.pos.x,
+						y: self.position.pos.y,
+						movement: self.position.nextPos
+					};
+					document.dispatchEvent(fireEvent);
+					self.position.lastPos = 'bottom';
+					self.position.nextPos = 'bottom';
 				}
 			};
 
-			DataSource[action](document, 'keydown', this.events.onKeydown);
+			DataSource[action](document, 'keydown', this.events.onKeydown)[action](document, 'restart', this.events.reinit);
 			// DataSource[action](document, ':hero-position', this.events.heroPosition);
 		};
 
-		Hero.prototype.addOnPosition = function () {
+		Hero.prototype.addOnPosition = function() {
 			this.mesh.position.x = this.position.pos.x;
 			this.mesh.position.y = this.position.pos.y;
 			this.mesh.position.z = this.position.pos.z;
 		};
 
-		Hero.prototype.animate = function () {
+		Hero.prototype.animate = function() {
 			var self = this;
 
-			DataSource.addAnimation(function (delta, now) {
-				(function (rot) {
+			DataSource.addAnimation(function(delta, now) {
+				(function(rot) {
 					var sign = rot.match(signRegExp),
 						dim = sign[2];
 
@@ -133,45 +149,41 @@ define([
 			});
 		};
 
-		Hero.prototype.updatePosition = function () {
+		Hero.prototype.updatePosition = function() {
 			var self = this;
 			DataSource.addAnimation(function anim() {
 				var newCoords = POSITIONS[self.position.nextPos];
 
-				if ( self.position.pos.x !== newCoords.x || self.position.pos.y !== newCoords.y ) {
-					var  newSystCoord = {
+				if (self.position.pos.x !== newCoords.x || self.position.pos.y !== newCoords.y) {
+					var newSystCoord = {
 						x: newCoords.x - self.position.pos.x,
 						y: newCoords.y - self.position.pos.y
 					};
 
 					var currPos = {
-						x: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow( newSystCoord.y / newSystCoord.x, 2 )),
-						y: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow( newSystCoord.x / newSystCoord.y, 2 ))
+						x: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow(newSystCoord.y / newSystCoord.x, 2)),
+						y: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow(newSystCoord.x / newSystCoord.y, 2))
 					};
 
-					if ( (currPos.x > newSystCoord.x && newSystCoord.x >= 0) || (currPos.x < newSystCoord.x && newSystCoord.x < 0) ) {
+					if ((currPos.x > newSystCoord.x && newSystCoord.x >= 0) || (currPos.x < newSystCoord.x && newSystCoord.x < 0)) {
 						self.position.pos.x = newCoords.x;
-					}
-					else {
-						if ( newSystCoord.x >= 0 ) {
+					} else {
+						if (newSystCoord.x >= 0) {
 							self.position.pos.x += currPos.x;
-						}
-						else {
+						} else {
 							self.position.pos.x -= currPos.x;
 						}
 					}
 
-					if ( (currPos.y > newSystCoord.y && newSystCoord.y >= 0) || (currPos.y < newSystCoord.y && newSystCoord.y < 0) ) {
+					if ((currPos.y > newSystCoord.y && newSystCoord.y >= 0) || (currPos.y < newSystCoord.y && newSystCoord.y < 0)) {
 						self.position.pos.y = newCoords.y;
-					}
-					else {
-						if ( newSystCoord.y >= 0 ) {
+					} else {
+						if (newSystCoord.y >= 0) {
 							self.position.pos.y += currPos.y;
-						}
-						else {
+						} else {
 							self.position.pos.y -= currPos.y;
 						}
-					}					
+					}
 
 					// fire custom event of change position of the hero
 					var fireEvent = new Event(':hero-position');
@@ -181,8 +193,7 @@ define([
 						movement: self.position.nextPos
 					};
 					document.dispatchEvent(fireEvent);
-				}
-				else {
+				} else {
 					self.position.lastPos = self.position.nextPos;
 					self.setPosition(POSITIONS[self.position.nextPos]);
 					DataSource.removeAnimation(anim);
@@ -192,13 +203,13 @@ define([
 			});
 		};
 
-		Hero.prototype.replaceToCurrentPosition = function () {
+		Hero.prototype.replaceToCurrentPosition = function() {
 			this.mesh.position.x = this.position.pos.x;
-			this.mesh.position.y = this.position.pos.y;	
+			this.mesh.position.y = this.position.pos.y;
 			this.mesh.position.z = this.position.pos.z;
 		};
 
-		Hero.prototype.setPosition = function (pos) {
+		Hero.prototype.setPosition = function(pos) {
 			this.position.pos.x = (pos.x) ? pos.x : 0;
 			this.position.pos.y = (pos.y) ? pos.y : 0;
 			this.position.pos.z = (pos.z) ? pos.z : 0;

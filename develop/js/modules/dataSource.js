@@ -10,7 +10,7 @@ define([
 			requestAnimationFrame(function(nowMsec) {
 				stats.begin();
 
-				if (!this.pause) {
+				if (!pause) {
 					startAnimationFrame();
 				}
 
@@ -28,7 +28,7 @@ define([
 
 		var handlers = {},
 			animations = [],
-			pause = false,
+			pause = true,
 			stats = new Stats();
 
 		stats.setMode(0); // 0: fps, 1: ms
@@ -62,6 +62,10 @@ define([
 				pause = true;
 			},
 
+			paused: function() {
+				return pause;
+			},
+
 			addEvent: function (elem, event, fn) {
 				if ( !handlers[elem] ) {
 					handlers[elem] = {};
@@ -80,6 +84,7 @@ define([
 					elem.addEventListener(event, handlers[elem][event].dispather);
 				}
 				handlers[elem][event].actions.push(fn);
+				return this;
 			},
 			removeEvent: function (elem, event, fn) {
 				if ( !event && handlers[elem] ) {
@@ -89,7 +94,7 @@ define([
 					}
 
 					delete handlers[elem];
-					return;
+					return this;
 				}
 
 				if ( !fn ) {
@@ -101,11 +106,12 @@ define([
 						delete handlers[elem];
 					}
 
-					return;
+					return this;
 				}
 
 				var pos = handlers[elem][event].actions.indexOf(fn);
 				(pos + 1) && handlers[elem][event].actions.splice(pos, 1);
+				return this;
 			}
 		};
 	}

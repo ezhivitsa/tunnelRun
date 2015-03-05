@@ -10,9 +10,10 @@ define([
 		'segment',
 		'hero',
 		'difficulty',
-		'collision'
+		'collision',
+		'userInterface'
 	],
-	function(THREE, Projector, TrackballControls, DataSource, Scene, Renderer, Camera, Segment, Hero, Difficulty, Collision) {
+	function(THREE, Projector, TrackballControls, DataSource, Scene, Renderer, Camera, Segment, Hero, Difficulty, Collision, Interface) {
 		'use strict';
 
 		var diff = new Difficulty();
@@ -30,15 +31,20 @@ define([
 				},
 				canvasElement = document.getElementById("WebGLCanvas");
 
-			var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height),
-				camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 700),
+
+			var renderer = new Renderer(canvasElement, pageSize.width, pageSize.height);
+
+			renderer.renderer.domElement.style.opacity = 0;
+
+			var camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 700),
 				scene = new Scene(renderer.get(), camera.get(), diff),
-				hero = new Hero(diff),
-				collision = new Collision();
+				hero = new Hero({ diff: diff }),
+				collision = new Collision(),
+				ui = new Interface(renderer.renderer.domElement,diff);
 
 			camera.setPosition(0, 0, 11);
 
-			scene.init();
+			scene.init(renderer.renderer.domElement);
 
 			var NUMOFSEGMENT = 33;
 			for (var i = 0; i < NUMOFSEGMENT; i++) {
@@ -53,9 +59,7 @@ define([
 			hero.animate();
 			diff.update();
 
-			collision.update();
-
-			DataSource.startAnimation();
+			collision.update();			
 		};
 	}
 );
