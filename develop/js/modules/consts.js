@@ -46,7 +46,8 @@ define([
 				width: 2,
 				height: 2,
 				depth: 2,
-				changePositionSpeed: 1
+				changePositionSpeed: 1,
+				moveSpeed: 0.4
 			},
 
 			figureOptions: {
