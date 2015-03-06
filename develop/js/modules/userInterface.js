@@ -1,11 +1,11 @@
 define([
-	'dataSource',
-	'consts'
-],
-	function (DataSource, consts) {
+		'dataSource',
+		'consts'
+	],
+	function(DataSource, consts) {
 		'use strict';
 
-		function Interface(element,diff) {
+		function Interface(element, diff) {
 			this.started = false;
 
 			this.diff = diff;
@@ -14,10 +14,12 @@ define([
 
 			this.button = document.querySelector('#paly-restart-btn');
 
+			this.gameStatus = document.querySelector('#game-text');
+
 			this.eventControl('on');
 		}
 
-		Interface.prototype.eventControl = function (action) {
+		Interface.prototype.eventControl = function(action) {
 
 			var self = this;
 
@@ -28,26 +30,45 @@ define([
 			}
 
 			this.events = this.events || {
-				startStop: function(e) {
-
+				startRestart: function(e) {
 					e.preventDefault();
 
 					if (!self.started) {
 						self.element.style.opacity = 1;
 						self.button.innerHTML = consts.buttonsText.restart;
 						DataSource.startAnimation();
+						self.gameStatus.innerHTML = consts.statusText.onGame;
 						self.started = true;
 					} else {
+						self.gameStatus.innerHTML = consts.statusText.restart;
 						self.diff.init();
 						var fireEvent = new Event('restart');
 						fireEvent.diff = self.diff;
 						document.dispatchEvent(fireEvent);
 						DataSource.paused() && DataSource.startAnimation();
+						self.gameStatus.innerHTML = consts.statusText.onGame;
 					}
+				},
+				pause: function(e) {
+
+					if (e.which != 32) {
+						return;
+					}
+
+					if (DataSource.paused()) {
+						DataSource.startAnimation()
+						self.gameStatus.innerHTML = consts.statusText.onGame;
+						self.element.style.opacity = 1;
+					} else {
+						DataSource.stopAnimation();
+						self.gameStatus.innerHTML = consts.statusText.pause;
+						self.element.style.opacity = 0.05;
+					}
+
 				}
 			};
 
-			DataSource[action](this.button, 'click', this.events.startStop);
+			DataSource[action](this.button, 'click', this.events.startRestart)[action](document, 'keydown', this.events.pause);
 		};
 
 		return Interface;

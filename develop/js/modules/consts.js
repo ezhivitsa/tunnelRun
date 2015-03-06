@@ -10,6 +10,14 @@ define([
 				restart: 'Restart'
 			},
 
+			statusText: {
+				standart: 'Press Play to start',
+				onGame: 'Your are playing',
+				pause: 'Game Paused',
+				restart: 'Game Restarted',
+				loss: 'Bad luck'
+			},
+
 			theme: {
 				magma: {
 					back: "/img/WP4YLUJW.jpg",

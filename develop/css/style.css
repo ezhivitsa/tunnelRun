@@ -2,8 +2,6 @@ body
 {
     font-family: Monospace;
 
-    overflow: hidden;
-
     margin: 0;
     padding: 0;
 
@@ -67,7 +65,7 @@ body
     vertical-align: top;
 }
 
-.game-text
+#game-text
 {
     font-size: 35px;
 

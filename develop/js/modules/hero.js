@@ -79,8 +79,7 @@ define([
 		}
 
 		Hero.prototype.init = function(obj) {
-			this.setPosition(POSITIONS.bottom);
-			console.log(this);
+			this.setPosition(POSITIONS.bottom, 'bottom');
 
 			this.diff = obj.diff;
 
@@ -123,8 +122,6 @@ define([
 						movement: 'bottom'
 					};
 					document.dispatchEvent(fireEvent);
-					self.opts.lastPos = 'bottom';
-					self.opts.nextPos = 'bottom';
 				}
 			};
 
@@ -214,9 +211,8 @@ define([
 					document.dispatchEvent(fireEvent);
 
 				}
-				else {
-					self.opts.lastPos = self.opts.nextPos;
-					self.setPosition(POSITIONS[self.opts.nextPos]);
+				else {					
+					self.setPosition(POSITIONS[self.opts.nextPos], self.opts.nextPos);
 					DataSource.removeAnimation(anim);
 				}
 
@@ -230,13 +226,14 @@ define([
 			this.mesh.position.z = this.opts.pos.z;
 		};
 
-		Hero.prototype.setPosition = function (pos) {
+		Hero.prototype.setPosition = function (pos, posName) {
 			this.opts.pos.x = (pos.x) ? pos.x : 0;
 			this.opts.pos.y = (pos.y) ? pos.y : 0;
 			this.opts.pos.z = (pos.z) ? pos.z : 0;
 
 			this.opts.pos.moveDim = (pos.moveDim) ? pos.moveDim : "-x";
 			this.mesh.rotation.set(0, 0, (pos.rotation.z) ? pos.rotation.z : 0);
+			this.opts.lastPos = this.opts.nextPos = posName;
 		};
 
 		return Hero;
