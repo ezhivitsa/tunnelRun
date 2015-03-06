@@ -25,7 +25,6 @@ define(['three', 'consts', 'figure'], function(THREE, consts, Figure) {
 			holder = null,
 			count = 0,
 			sidePos = 0;
-		console.log(map);
 		while (iteration < consts.obstacleOptions.matrixSize) {
 			sidePos = Math.floor(iteration / (this.vSize - 1));
 			if (map[iteration]) {

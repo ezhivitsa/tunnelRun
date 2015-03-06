@@ -100,11 +100,11 @@ define([
 					var movement = BUTTONS[event.which + ':move'],
 						position = BUTTONS[event.which + ':change']
 
-					if ( self.opts.lastPos === self.opts.nextPos && position !== self.opts.lastPos && self.move ) {
+					if ( self.opts.lastPos === self.opts.nextPos && position !== self.opts.lastPos && !self.opts.move ) {
 						if ( movement ) {
+							var moveSide = (movement === 'left') ? -1 : 1;
 							// move hero
-							self.move();
-							console.log('move')
+							self.move(moveSide);
 						}
 						else if ( position ) {
 							// set new position
@@ -149,15 +149,36 @@ define([
 			});
 		};
 
-		Hero.prototype.move = function () {
-			var sign = this.opts.pos.moveDim.match(signRegExp),
+		Hero.prototype.move = function (moveSide) {
+			var self = this;
+			
+			var changing = 0,
+				sign = this.opts.pos.moveDim.match(signRegExp),
 				dim = sign[2];
 
 			sign = sign[1] ? -1 : 1;
 
-			this.opts.pos[dim] += consts.hero.moveSpeed * sign;
-			this.mesh.rotation.z += consts.hero.moveSpeed * sign;
-			this.mesh.position[dim] += consts.hero.moveSpeed * sign;
+			self.opts.move = true;
+
+			DataSource.addAnimation(function anim (delta) {
+				if ( changing < consts.hero.moveSpeed ) {
+					var currentChange = consts.hero.movePerFrame * delta;
+					changing += currentChange;
+
+					if ( changing >= consts.hero.moveSpeed ) {
+						currentChange = currentChange - changing + consts.hero.moveSpeed;
+						changing = consts.hero.moveSpeed;
+					}
+
+					self.opts.pos[dim] += currentChange * sign * moveSide;
+					self.mesh.rotation.z += currentChange * sign * moveSide;
+					self.mesh.position[dim] += currentChange * sign * moveSide;
+				}
+				else {
+					DataSource.removeAnimation(anim);
+					self.opts.move = false;
+				}
+			});
 		};
 
 		Hero.prototype.updatePosition = function () {

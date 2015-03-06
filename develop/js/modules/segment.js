@@ -164,29 +164,31 @@ define([
 
 		Segment.prototype.addNearPass = function (pos, arrayPositions) {
 			var newPos = null;
-			if ( pos % SIDE_LINES === 0 ) {
-				// pos - position of the first line on the side
-				if ( !this.blockMatrix[pos + 1] ) {
-					newPos = pos + 1;
-				}
-			}
-			else if ( !pos % (SIDE_LINES - 1) === 0 ) {
-				// pos - position of the last line on the side
-				if ( !this.blockMatrix[pos - 1] ) {
-					newPos = pos - 1;
-				}
-			}
-			else {
+			// if ( pos % SIDE_LINES === 0 ) {
+			// 	// pos - position of the first line on the side
+			// 	if ( !this.blockMatrix[pos + 1] ) {
+			// 		newPos = pos + 1;
+			// 	}
+			// }
+			// else if ( pos % (SIDE_LINES - 1) !== 0 ) {
+			// 	// pos - position of the last line on the side
+			// 	if ( !this.blockMatrix[pos - 1] ) {
+			// 		newPos = pos - 1;
+			// 	}
+			// }
+			// else {
 				// pos - position between first and last lines
-				if ( !this.blockMatrix[pos - 1] && !this.blockMatrix[pos + 1] ) {
+				var prevPos = (pos - 1 + consts.obstacleOptions.matrixSize) % consts.obstacleOptions.matrixSize,
+					nextPos = (pos + 1) % consts.obstacleOptions.matrixSize;
+				if ( !this.blockMatrix[prevPos] && !this.blockMatrix[nextPos] ) {
 					if ( Math.random() < 0.5 ) {
-						newPos = pos - 1;
+						newPos = prevPos;
 					}
 					else {
-						newPos = pos + 1;
+						newPos = nextPos;
 					}
 				}
-			}
+			//}
 
 			if ( newPos ) {
 				var p = arrayPositions.indexOf(newPos);
