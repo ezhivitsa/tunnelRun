@@ -9,6 +9,10 @@ body
     background-color: #eee;
 }
 
+#stats {
+    z-index: 2;
+}
+
 .game-field
 {
     font-size: 0;

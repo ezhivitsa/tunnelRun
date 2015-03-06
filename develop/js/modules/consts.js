@@ -44,7 +44,8 @@ define([
 			},
 			obstacleOptions: {
 				width: 12,
-				depth: 6
+				depth: 6,
+				matrixSize: 44
 			},
 
 			hero: {
