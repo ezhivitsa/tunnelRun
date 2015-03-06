@@ -104,7 +104,6 @@ define([
 						if ( movement ) {
 							// move hero
 							self.move();
-							console.log('move')
 						}
 						else if ( position ) {
 							// set new position
