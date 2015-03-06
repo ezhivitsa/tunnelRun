@@ -35,7 +35,6 @@ define([
 		var obstacleCollision = function(position,obstacles,ray,event) {
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
-			// console.log(collision)
 			if (collision && collision.distance <= consts.hero.radius) {
 				var fireEvent = new Event(event);
 				document.dispatchEvent(fireEvent);

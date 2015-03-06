@@ -55,7 +55,6 @@ define(['three', 'consts', 'figure'], function(THREE, consts, Figure) {
 		}
 
 		segment.myObstacleCount = count;
-		// console.log(segment)
 
 		return segment;
 	};
