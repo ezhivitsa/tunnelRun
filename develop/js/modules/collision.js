@@ -17,27 +17,41 @@ define([
 
 			this.rays = {
 				forward: new THREE.Vector3(0, 0, -1),
-				horizontal: {
+				bottom: {
 					right: new THREE.Vector3(1, 0, 0),
 					left: new THREE.Vector3(-1, 0, 0),
 					'forward-right': new THREE.Vector3(1, 0, -1),
 					'forward-left': new THREE.Vector3(-1, 0, -1)
 				},
-				vertical: {
-					up: new THREE.Vector3(0, 1, 0),
-					down: new THREE.Vector3(0, -1, 0),
-					'forward-up': new THREE.Vector3(0, 1, -1),
-					'forward-down': new THREE.Vector3(0, -1, -1)
+				right: {
+					right: new THREE.Vector3(0, 1, 0),
+					left: new THREE.Vector3(0, -1, 0),
+					'forward-right': new THREE.Vector3(0, 1, -1),
+					'forward-left': new THREE.Vector3(0, -1, -1)
+				},
+				top: {
+					left: new THREE.Vector3(1, 0, 0),
+					right: new THREE.Vector3(-1, 0, 0),
+					'forward-left': new THREE.Vector3(1, 0, -1),
+					'forward-right': new THREE.Vector3(-1, 0, -1)
+				},
+				left: {
+					left: new THREE.Vector3(0, 1, 0),
+					right: new THREE.Vector3(0, -1, 0),
+					'forward-left': new THREE.Vector3(0, 1, -1),
+					'forward-right': new THREE.Vector3(0, -1, -1)
 				}
 			};
 		};
 
-		var obstacleCollision = function(position,obstacles,ray,event) {
+		var obstacleCollision = function(position,obstacles,ray,eventParam) {
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
 			if (collision && collision.distance <= consts.hero.radius) {
-				var fireEvent = new Event(event);
+				var fireEvent = new Event('hero-stop');
+				fireEvent.direction = eventParam;
 				document.dispatchEvent(fireEvent);
+				console.log(eventParam)
 				return true;
 			}
 			return false;
@@ -80,11 +94,14 @@ define([
 		Collision.prototype.segmentCollision = function() {
 			var borderX = this.meshs[currentSegmentPosition].position.x + consts.segmentSize.width/2,
 				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height/2;
+
 			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius > borderX ) {
-				var fireEvent = new Event(this.hero.mesh.position.x > 0 ? 'hero.stop-right' :'hero.stop-left');
+				var fireEvent = new Event('hero-stop');
+				fireEvent.direction = this.hero.mesh.position.x > 0 ? (this.hero.opts.lastPos == 'bottom' ? 'right' : 'left') : (this.hero.opts.lastPos == 'bottom' ? 'left' : 'right');
 				document.dispatchEvent(fireEvent);
 			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius > borderY ) {
-				var fireEvent = new Event(this.hero.mesh.position.y > 0 ? 'hero.stop-up' :'hero.stop-down');
+				var fireEvent = new Event('hero-stop');
+				fireEvent.direction = this.hero.mesh.position.y > 0 ? (this.hero.opts.lastPos == 'right' ? 'right' : 'left') : (this.hero.opts.lastPos == 'right' ? 'left' : 'right');
 				document.dispatchEvent(fireEvent);
 			}
 		}
@@ -94,14 +111,12 @@ define([
 				return;
 			}
 
-			if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays.forward,'hero.stop-forward')) {
+			if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays.forward,'forward')) {
 				return;
 			}
 
-			var plane = (this.hero.opts.lastPos == 'top' || this.hero.opts.lastPos == 'bottom') ? 'horizontal' : 'vertical';
-
-			for (var key in this.rays[plane]) {
-				if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[plane][key],'hero.stop-' + key)) {
+			for (var key in this.rays[this.hero.opts.lastPos]) {
+				if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[this.hero.opts.lastPos][key],key)) {
 					return;
 				}
 			}
