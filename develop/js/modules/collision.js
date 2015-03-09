@@ -9,7 +9,8 @@ define([
 
 		var nextSegment = null,
 			currentSegmentPosition = null,
-			distance = 0;
+			distance = 0,
+			collisions = [];
 
 		var caster = new THREE.Raycaster();
 
@@ -48,10 +49,7 @@ define([
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
 			if (collision && collision.distance <= consts.hero.radius) {
-				var fireEvent = new Event('hero-stop');
-				fireEvent.direction = eventParam;
-				document.dispatchEvent(fireEvent);
-				console.log(eventParam)
+				!(collisions.indexOf(eventParam)+1) && collisions.push(eventParam)				
 				return true;
 			}
 			return false;
@@ -93,16 +91,15 @@ define([
 
 		Collision.prototype.segmentCollision = function() {
 			var borderX = this.meshs[currentSegmentPosition].position.x + consts.segmentSize.width/2,
-				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height/2;
+				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height/2,
+				direction = null;
 
 			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius > borderX ) {
-				var fireEvent = new Event('hero-stop');
-				fireEvent.direction = this.hero.mesh.position.x > 0 ? (this.hero.opts.lastPos == 'bottom' ? 'right' : 'left') : (this.hero.opts.lastPos == 'bottom' ? 'left' : 'right');
-				document.dispatchEvent(fireEvent);
+				direction = this.hero.mesh.position.x > 0 ? (this.hero.opts.lastPos == 'bottom' ? 'right' : 'left') : (this.hero.opts.lastPos == 'bottom' ? 'left' : 'right');
+				!collisions.indexOf(direction) && collisions.push(direction);
 			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius > borderY ) {
-				var fireEvent = new Event('hero-stop');
 				fireEvent.direction = this.hero.mesh.position.y > 0 ? (this.hero.opts.lastPos == 'right' ? 'right' : 'left') : (this.hero.opts.lastPos == 'right' ? 'left' : 'right');
-				document.dispatchEvent(fireEvent);
+				!collisions.indexOf(direction) && collisions.push(direction);
 			}
 		}
 
@@ -110,15 +107,10 @@ define([
 			if (this.hero.opts.lastPos != this.hero.opts.nextPos) {
 				return;
 			}
-
-			if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays.forward,'forward')) {
-				return;
-			}
+			obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays.forward,'forward');
 
 			for (var key in this.rays[this.hero.opts.lastPos]) {
-				if (obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[this.hero.opts.lastPos][key],key)) {
-					return;
-				}
+				obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[this.hero.opts.lastPos][key],key);
 			}
 
 			var obstacleIteration = 0;
@@ -166,6 +158,13 @@ define([
 
 				self.segmentCollision();
 				self.runCollision();
+
+				if (collisions.length != 0) {
+					var fireEvent = new Event('hero-stop');
+					fireEvent.direction = collisions;
+					document.dispatchEvent(fireEvent);
+				}
+				collisions = [];
 			});
 		};
 
