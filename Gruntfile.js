@@ -59,8 +59,7 @@ module.exports = function(grunt) {
 						'css/**'
 					],
 					cwd: 'develop',
-					dest: 'build',
-					filter: '!style.css'
+					dest: 'build'
 				}]
 			}
 		},
