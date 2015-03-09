@@ -12,8 +12,8 @@ define([
 			'68:change': 'right', // D button
 			'83:change': 'bottom', // S button
 			'65:change': 'left', // A button
-			'39:move': 'left', // -> button
-			'37:move': 'right' // <- button
+			'39:move': -1, // -> button
+			'37:move': 1 // <- button
 		};
 
 		var POSITIONS = {
@@ -76,6 +76,7 @@ define([
 			this.init(diff);
 
 			this.eventControl('on');
+			this.move();
 		}
 
 		Hero.prototype.init = function(obj) {
@@ -102,9 +103,7 @@ define([
 
 					if ( self.opts.lastPos === self.opts.nextPos && position !== self.opts.lastPos && !self.opts.move ) {
 						if ( movement ) {
-							var moveSide = (movement === 'left') ? -1 : 1;
-							// move hero
-							self.move(moveSide);
+							self.opts.move = movement;
 						}
 						else if ( position ) {
 							// set new position
@@ -113,6 +112,15 @@ define([
 						}
 					}
 				},
+
+				onKeyup: function (event) {
+					var movement = BUTTONS[event.which + ':move'];
+
+					if ( movement === self.opts.move ) {
+						self.opts.move = 0;
+					}
+				},
+
 				reinit: function(event) {
 					self.init.call(self, event);
 					var fireEvent = new Event(':hero-position');
@@ -125,7 +133,10 @@ define([
 				}
 			};
 
-			DataSource[action](document, 'keydown', this.events.onKeydown)[action](document, 'restart', this.events.reinit);
+			DataSource
+				[action](document, 'keydown', this.events.onKeydown)
+				[action](document, 'keyup', this.events.onKeyup)
+				[action](document, 'restart', this.events.reinit);
 		};
 
 		Hero.prototype.addOnPosition = function () {
@@ -149,34 +160,26 @@ define([
 			});
 		};
 
-		Hero.prototype.move = function (moveSide) {
+		Hero.prototype.move = function () {
 			var self = this;
-			
-			var changing = 0,
-				sign = this.opts.pos.moveDim.match(signRegExp),
-				dim = sign[2];
-
-			sign = sign[1] ? -1 : 1;
-
-			self.opts.move = true;
 
 			DataSource.addAnimation(function anim (delta) {
-				if ( changing < consts.hero.moveSpeed ) {
-					var currentChange = consts.hero.movePerFrame * delta;
-					changing += currentChange;
+				var sign = self.opts.pos.moveDim.match(signRegExp),
+					currentChange = consts.hero.movePerFrame * delta,
+					dim = sign[2];
 
-					if ( changing >= consts.hero.moveSpeed ) {
-						currentChange = currentChange - changing + consts.hero.moveSpeed;
-						changing = consts.hero.moveSpeed;
-					}
+				sign = sign[1] ? -1 : 1;
 
-					self.opts.pos[dim] += currentChange * sign * moveSide;
-					self.mesh.rotation.z += currentChange * sign * moveSide;
-					self.mesh.position[dim] += currentChange * sign * moveSide;
+				var maxMove = consts.segmentSize.width / 2 - consts.hero.radius;
+				if ( Math.abs(self.opts.pos[dim] + currentChange * sign * self.opts.move) > maxMove ) {
+					self.opts.pos[dim] = maxMove * sign * self.opts.move;
+					self.mesh.rotation.z = maxMove * sign * self.opts.move;
+					self.mesh.position[dim] = maxMove * sign * self.opts.move;
 				}
 				else {
-					DataSource.removeAnimation(anim);
-					self.opts.move = false;
+					self.opts.pos[dim] += currentChange * sign * self.opts.move;
+					self.mesh.rotation.z += currentChange * sign * self.opts.move;
+					self.mesh.position[dim] += currentChange * sign * self.opts.move;
 				}
 			});
 		};
