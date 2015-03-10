@@ -70,7 +70,12 @@ define([
 				nextPos: 'bottom',
 				rot: 0,
 				pos: {},
-				move: false
+				move: false,
+				moveDir: {
+					forward: 0,
+					left: 0,
+					right: 0
+				}
 			};
 
 			this.init(diff);
@@ -177,10 +182,13 @@ define([
 					self.mesh.position[dim] = maxMove * sign * self.opts.move;
 				}
 				else {
-					self.opts.pos[dim] += currentChange * sign * self.opts.move;
-					self.mesh.rotation.z += currentChange * sign * self.opts.move;
-					self.mesh.position[dim] += currentChange * sign * self.opts.move;
+					self.opts.pos[dim] += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
+					self.mesh.rotation.z += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
+					self.mesh.position[dim] += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
 				}
+
+				self.mesh.position.z += self.diff.get('speed') * delta * self.opts.moveDir.forward;
+				// self.opts.position.z += self.diff.get('speed') * delta * self.opts.moveDir.forward;
 			});
 		};
 
@@ -259,6 +267,27 @@ define([
 			this.mesh.rotation.set(0, 0, (pos.rotation.z) ? pos.rotation.z : 0);
 			this.opts.lastPos = this.opts.nextPos = posName;
 		};
+
+		Hero.prototype.removeRestrictions = function () {
+			this.opts.moveDir.forward = 0;
+			this.opts.moveDir.left = 0;
+			this.opts.moveDir.right = 0;
+		};
+
+		Hero.prototype.setRestrictions = function (collisions) {
+			// console.log(collisions)
+			for ( var i = 0; i < collisions.length; i++ ) {
+				if ( collisions[i].indexOf('forward') + 1 ) {
+					this.opts.moveDir.forward = 1;
+				}
+				if ( collisions[i].indexOf('left') + 1 ) {
+					this.opts.moveDir.left = -1;
+				}
+				if ( collisions[i].indexOf('right') + 1 ) {
+					this.opts.moveDir.right = 1;
+				}
+			}
+		}
 
 		return Hero;
 	}

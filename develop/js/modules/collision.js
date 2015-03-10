@@ -48,8 +48,9 @@ define([
 		var obstacleCollision = function(position,obstacles,ray,eventParam) {
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
+			console.log(position)
 			if (collision && collision.distance <= consts.hero.radius) {
-				!(collisions.indexOf(eventParam)+1) && collisions.push(eventParam)				
+				!(collisions.indexOf(eventParam)+1) && collisions.push(eventParam)
 				return true;
 			}
 			return false;
@@ -156,13 +157,15 @@ define([
 					// }
 				}
 
-				self.segmentCollision();
+				//self.segmentCollision();
 				self.runCollision();
 
+				self.hero.removeRestrictions();
 				if (collisions.length != 0) {
-					var fireEvent = new Event('hero-stop');
-					fireEvent.direction = collisions;
-					document.dispatchEvent(fireEvent);
+					self.hero.setRestrictions(collisions);
+					//var fireEvent = new Event('hero-stop');
+					//fireEvent.direction = collisions;
+					//document.dispatchEvent(fireEvent);
 				}
 				collisions = [];
 			});
