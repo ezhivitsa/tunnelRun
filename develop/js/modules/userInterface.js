@@ -42,9 +42,7 @@ define([
 					} else {
 						self.gameStatus.innerHTML = consts.statusText.restart;
 						self.diff.init();
-						var fireEvent = new Event('restart');
-						fireEvent.diff = self.diff;
-						document.dispatchEvent(fireEvent);
+						DataSource.triggerEvent(document, 'restart', { diff: self.diff });
 						DataSource.paused() && DataSource.startAnimation();
 						self.gameStatus.innerHTML = consts.statusText.onGame;
 					}
@@ -64,11 +62,17 @@ define([
 						self.gameStatus.innerHTML = consts.statusText.pause;
 						self.element.style.opacity = 0.05;
 					}
+				},
 
+				end: function(e) {
+					console.log('End game');
 				}
 			};
 
-			DataSource[action](this.button, 'click', this.events.startRestart)[action](document, 'keydown', this.events.pause);
+			DataSource
+				[action](this.button, 'click', this.events.startRestart)
+				[action](document, 'keydown', this.events.pause)
+				[action](document, ':game-end', this.events.end);
 		};
 
 		return Interface;

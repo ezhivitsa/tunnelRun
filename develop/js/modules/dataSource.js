@@ -111,6 +111,17 @@ define([
 				var pos = handlers[elem][event].actions.indexOf(fn);
 				(pos + 1) && handlers[elem][event].actions.splice(pos, 1);
 				return this;
+			},
+
+			triggerEvent: function (element, eventName, options) {
+				options = options || {};
+
+				var fireEvent = new Event(eventName);
+				for ( var opt in options ) {
+					fireEvent[opt] = options[opt];
+				}
+				element.dispatchEvent(fireEvent);
+				return this;
 			}
 		};
 	}

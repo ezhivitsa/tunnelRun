@@ -85,7 +85,7 @@ define([
 		}
 
 		Hero.prototype.init = function(obj) {
-			this.setPosition(POSITIONS.bottom, 'bottom');
+			this.setPosition(POSITIONS.bottom, 'bottom', true);
 
 			this.diff = obj.diff;
 
@@ -128,13 +128,13 @@ define([
 
 				reinit: function(event) {
 					self.init.call(self, event);
-					var fireEvent = new Event(':hero-position');
-					fireEvent.heroPosition = {
-						x: self.opts.pos.x,
-						y: self.opts.pos.y,
-						movement: 'bottom'
-					};
-					document.dispatchEvent(fireEvent);
+					DataSource.triggerEvent(document, ':hero-position', { 
+						heroPosition: {
+							x: self.opts.pos.x,
+							y: self.opts.pos.y,
+							movement: 'bottom'
+						}
+					});
 				}
 			};
 
@@ -168,6 +168,8 @@ define([
 		Hero.prototype.move = function () {
 			var self = this;
 
+			var maxMove = consts.segmentSize.width / 2 - consts.hero.radius;
+
 			DataSource.addAnimation(function anim (delta) {
 				var sign = self.opts.pos.moveDim.match(signRegExp),
 					currentChange = consts.hero.movePerFrame * delta,
@@ -175,7 +177,23 @@ define([
 
 				sign = sign[1] ? -1 : 1;
 
-				var maxMove = consts.segmentSize.width / 2 - consts.hero.radius;
+				var insreaseZ = self.diff.get('speed') * delta * self.opts.moveDir.forward;
+				if ( self.opts.pos.z + insreaseZ > POSITIONS[self.opts.lastPos].z  ) {
+					self.mesh.position.z += insreaseZ;
+					self.opts.pos.z += insreaseZ;
+				}
+				else {
+					self.mesh.position.z = self.opts.pos.z = POSITIONS[self.opts.lastPos].z;
+				}
+
+				if ( self.opts.pos.z > consts.hero.minZPos ) {
+					DataSource.triggerEvent(document, ':game-end');
+				}
+
+				if ( !self.opts.move ) {
+					return;
+				}
+
 				if ( Math.abs(self.opts.pos[dim] + currentChange * sign * self.opts.move) > maxMove ) {
 					self.opts.pos[dim] = maxMove * sign * self.opts.move;
 					self.mesh.rotation.z = maxMove * sign * self.opts.move;
@@ -187,8 +205,6 @@ define([
 					self.mesh.position[dim] += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
 				}
 
-				self.mesh.position.z += self.diff.get('speed') * delta * self.opts.moveDir.forward;
-				// self.opts.position.z += self.diff.get('speed') * delta * self.opts.moveDir.forward;
 			});
 		};
 
@@ -234,14 +250,13 @@ define([
 					}
 
 					// fire custom event of change position of the hero
-					var fireEvent = new Event(':hero-position');
-					fireEvent.heroPosition = {
-						x: self.opts.pos.x,
-						y: self.opts.pos.y,
-						movement: self.opts.nextPos
-					};
-					document.dispatchEvent(fireEvent);
-
+					DataSource.triggerEvent(document, ':hero-position', { 
+						heroPosition: {
+							x: self.opts.pos.x,
+							y: self.opts.pos.y,
+							movement: self.opts.nextPos
+						}
+					});
 				}
 				else {					
 					self.setPosition(POSITIONS[self.opts.nextPos], self.opts.nextPos);
@@ -258,10 +273,13 @@ define([
 			this.mesh.position.z = this.opts.pos.z;
 		};
 
-		Hero.prototype.setPosition = function (pos, posName) {
+		Hero.prototype.setPosition = function (pos, posName, changeZ) {
 			this.opts.pos.x = (pos.x) ? pos.x : 0;
 			this.opts.pos.y = (pos.y) ? pos.y : 0;
-			this.opts.pos.z = (pos.z) ? pos.z : 0;
+
+			if ( changeZ ) {
+				this.opts.pos.z = (pos.z) ? pos.z : 0;
+			}
 
 			this.opts.pos.moveDim = (pos.moveDim) ? pos.moveDim : "-x";
 			this.mesh.rotation.set(0, 0, (pos.rotation.z) ? pos.rotation.z : 0);
@@ -269,13 +287,12 @@ define([
 		};
 
 		Hero.prototype.removeRestrictions = function () {
-			this.opts.moveDir.forward = 0;
+			this.opts.moveDir.forward = consts.hero.resumeZSpeed;
 			this.opts.moveDir.left = 0;
 			this.opts.moveDir.right = 0;
 		};
 
 		Hero.prototype.setRestrictions = function (collisions) {
-			// console.log(collisions)
 			for ( var i = 0; i < collisions.length; i++ ) {
 				if ( collisions[i].indexOf('forward') + 1 ) {
 					this.opts.moveDir.forward = 1;

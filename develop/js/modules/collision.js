@@ -48,7 +48,6 @@ define([
 		var obstacleCollision = function(position,obstacles,ray,eventParam) {
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
-			console.log(position)
 			if (collision && collision.distance <= consts.hero.radius) {
 				!(collisions.indexOf(eventParam)+1) && collisions.push(eventParam)
 				return true;
@@ -127,8 +126,7 @@ define([
 			}
 
 			if (this.segments[currentSegmentPosition].blockMatrix[obstacleIteration]==2) {
-				var fireEvent = new Event('hero.abyss-die');
-				document.dispatchEvent(fireEvent);
+				DataSource.triggerEvent(document, 'hero.abyss-die');
 			}
 
 		};
