@@ -38,8 +38,8 @@ define([
 
 			var camera = new Camera(75, pageSize.width, pageSize.height, 0.1, 700),
 				scene = new Scene(renderer.get(), camera.get(), diff),
-				hero = new Hero({ diff: diff }),
 				collision = new Collision(),
+				hero = new Hero({ diff: diff, collision: collision }),
 				ui = new Interface(renderer.renderer.domElement,diff);
 
 			camera.setPosition(0, 0, 11);
@@ -58,7 +58,7 @@ define([
 			scene.animate();
 			diff.update();
 
-			collision.update();			
+			collision.update();
 		};
 	}
 );

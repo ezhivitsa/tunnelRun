@@ -87,7 +87,9 @@ define([
 		Hero.prototype.init = function(obj) {
 			this.setPosition(POSITIONS.bottom, 'bottom', true);
 
-			this.diff = obj.diff;
+			for ( var option in obj ) {
+				this[option] = obj[option];
+			}
 
 			this.addOnPosition();
 		};
@@ -113,6 +115,11 @@ define([
 						else if ( position ) {
 							// set new position
 							self.opts.nextPos = position;
+
+							// need to check blocks on the new position
+							self.checkBlocks();
+
+							// start movement to the new position
 							self.updatePosition();
 						}
 					}
@@ -176,8 +183,7 @@ define([
 					DataSource.triggerEvent(document, ':game-end');
 				}
 
-				// console.log(increaseZ)
-				self.opts.rot += (self.diff.get('speed') * delta + self.increaseZ) / consts.hero.radius;
+				self.opts.rot += (self.diff.get('speed') * delta - self.increaseZ) / consts.hero.radius;
 				self.mesh.rotation[dim] = self.opts.rot * sign;
 
 				if ( !self.opts.move ) {
@@ -195,6 +201,24 @@ define([
 					self.mesh.position[dim] += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
 				}
 			});
+		};
+
+		Hero.prototype.checkBlocks = function () {
+			var newCoords = POSITIONS[this.opts.nextPos];
+
+			var  newSystCoord = {
+				x: newCoords.x - this.opts.pos.x,
+				y: newCoords.y - this.opts.pos.y
+			};
+
+			var ray = new THREE.Vector3(0, newSystCoord.x, newSystCoord.y);
+
+			var currPos = {
+				x: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow(newSystCoord.y / newSystCoord.x, 2)),
+				y: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow(newSystCoord.x / newSystCoord.y, 2))
+			};
+
+			console.log(newSystCoord, currPos)
 		};
 
 		Hero.prototype.updatePosition = function () {
