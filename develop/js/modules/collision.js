@@ -201,10 +201,6 @@ define([
 					//fireEvent.direction = collisions;
 					//document.dispatchEvent(fireEvent);
 				}
-<<<<<<< HEAD
-				//console.log(collisions)
-=======
->>>>>>> origin/master
 			});
 		};
 
