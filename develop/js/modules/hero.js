@@ -20,7 +20,7 @@ define([
 			top: {
 				x: 0,
 				y: 11,
-				z: -3,
+				z: -10,
 				moveDim: 'x',
 				rotation: {
 					z: 0
@@ -29,7 +29,7 @@ define([
 			right: {
 				x: 11,
 				y: 0,
-				z: -3,
+				z: -10,
 				moveDim: '-y',
 				rotation: {
 					z: -Math.PI / 2
@@ -38,7 +38,7 @@ define([
 			bottom: {
 				x: 0,
 				y: -11,
-				z: -3,
+				z: -10,
 				moveDim: '-x',
 				rotation: {
 					z: Math.PI
@@ -47,7 +47,7 @@ define([
 			left: {
 				x: -11,
 				y: 0,
-				z: -3,
+				z: -10,
 				moveDim: 'y',
 				rotation: {
 					z: Math.PI / 2
@@ -162,14 +162,14 @@ define([
 
 				sign = sign[1] ? -1 : 1;
 
-				var increaseZ = self.diff.get('speed') * delta * self.opts.moveDir.forward;
+				self.increaseZ = self.diff.get('speed') * delta * self.opts.moveDir.forward;
 				if ( self.opts.pos.z + increaseZ > POSITIONS[self.opts.lastPos].z  ) {
 					self.mesh.position.z += increaseZ;
 					self.opts.pos.z += increaseZ;
 				}
 				else {
-					// insreaseZ = 0;
 					self.mesh.position.z = self.opts.pos.z = POSITIONS[self.opts.lastPos].z;
+					self.increaseZ = 0;
 				}
 
 				if ( self.opts.pos.z > consts.hero.minZPos ) {
@@ -177,7 +177,7 @@ define([
 				}
 
 				// console.log(increaseZ)
-				self.opts.rot += (self.diff.get('speed') * delta + increaseZ) / consts.hero.radius;
+				self.opts.rot += (self.diff.get('speed') * delta + self.increaseZ) / consts.hero.radius;
 				self.mesh.rotation[dim] = self.opts.rot * sign;
 
 				if ( !self.opts.move ) {
