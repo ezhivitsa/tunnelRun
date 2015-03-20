@@ -31,7 +31,7 @@ define([
 				myUpdate++;
 				if (myUpdate == 20) {
 					self.gameScore += self.diff.get('speed');
-					self.gameScoreField.innerHTML = Math.round(self.gameScore * 10) / 10;
+					self.gameScoreField.innerHTML = Math.round(self.gameScore * 10);
 					myUpdate = 0;
 				}
 			});
@@ -84,12 +84,17 @@ define([
 				},
 
 				end: function(e) {
-					console.log('End game');
+					DataSource.stopAnimation();
+					self.gameStatus.innerHTML = consts.statusText.loss;
+					self.element.style.opacity = 0.05;
 				}
 			};
 
 			DataSource
-				[action](this.button, 'click', this.events.startRestart)[action](document, 'keydown', this.events.pause)[action](document, ':game-end', this.events.end);
+				[action](this.button, 'click', this.events.startRestart)
+				[action](document, 'keydown', this.events.pause)
+				[action](document, ':game-end', this.events.end)
+				[action](document, 'hero.abyss-die', this.events.end);
 		};
 
 		return Interface;
