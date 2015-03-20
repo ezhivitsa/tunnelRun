@@ -45,8 +45,12 @@ define([
 			};
 		};
 
-		var obstacleCollision = function(position, obstacles, ray, eventParam) {
-			caster.set(position, ray);
+		var obstacleCollision = function(mesh, obstacles, ray, eventParam) {
+			var localRay= ray.clone();
+			localRay = localRay.applyMatrix4( mesh.matrix );
+			localRay = localRay.sub( mesh.position );
+
+			caster.set(mesh.position.clone(), ray.clone().normalize());
 			var collision = caster.intersectObjects(obstacles)[0];
 			if (collision && collision.distance <= ray.length()) {
 				!(collisions.indexOf(eventParam) + 1) && collisions.push(eventParam)
@@ -112,10 +116,10 @@ define([
 				self.updated = true;
 				return;
 			}
-			obstacleCollision(this.hero.mesh.position, this.meshs[currentSegmentPosition].children, this.rays.forward, 'forward');
+			obstacleCollision(this.hero.mesh, this.meshs[currentSegmentPosition].children, this.rays.forward, 'forward');
 
 			for (var key in this.rays[this.hero.opts.lastPos]) {
-				obstacleCollision(this.hero.mesh.position, this.meshs[currentSegmentPosition].children, this.rays[this.hero.opts.lastPos][key], key);
+				obstacleCollision(this.hero.mesh, this.meshs[currentSegmentPosition].children, this.rays[this.hero.opts.lastPos][key], key);
 			}
 
 			var obstacleIteration = 0;
