@@ -21,40 +21,66 @@ define([
 				bottom: {
 					right: new THREE.Vector3(1, 0, 0),
 					left: new THREE.Vector3(-1, 0, 0),
-					'forward-right': new THREE.Vector3(1, 0, -1),
-					'forward-left': new THREE.Vector3(-1, 0, -1)
+					'forward-right': [ new THREE.Vector3(0.31, 0, -0.98),
+										new THREE.Vector3(0.67, 0, -0.93),
+										new THREE.Vector3(0.93, 0, -0.67),
+										new THREE.Vector3(0.98, 0, -0.31) ],
+					'forward-left': [ new THREE.Vector3(-0.31, 0, -0.98),
+										new THREE.Vector3(-0.67, 0, -0.93),
+										new THREE.Vector3(-0.93, 0, -0.67),
+										new THREE.Vector3(-0.98, 0, -0.31) ]
 				},
 				right: {
 					right: new THREE.Vector3(0, 1, 0),
 					left: new THREE.Vector3(0, -1, 0),
-					'forward-right': new THREE.Vector3(0, 1, -1),
-					'forward-left': new THREE.Vector3(0, -1, -1)
+					'forward-right': [ new THREE.Vector3(0, 0.31, -0.98),
+										new THREE.Vector3(0, 0.67, -0.93),
+										new THREE.Vector3(0, 0.93, -0.67),
+										new THREE.Vector3(0, 0.98, -0.31) ],
+					'forward-left': [ new THREE.Vector3(0, -0.31, -0.98),
+										new THREE.Vector3(0, -0.67, -0.93),
+										new THREE.Vector3(0, -0.93, -0.67),
+										new THREE.Vector3(0, -0.98, -0.31) ]
 				},
 				top: {
 					left: new THREE.Vector3(1, 0, 0),
 					right: new THREE.Vector3(-1, 0, 0),
-					'forward-left': new THREE.Vector3(1, 0, -1),
-					'forward-right': new THREE.Vector3(-1, 0, -1)
+					'forward-left': [ new THREE.Vector3(0.31, 0, -0.98),
+										new THREE.Vector3(0.67, 0, -0.93),
+										new THREE.Vector3(0.93, 0, -0.67),
+										new THREE.Vector3(0.98, 0, -0.31) ],
+					'forward-right': [ new THREE.Vector3(-0.31, 0, -0.98),
+										new THREE.Vector3(-0.67, 0, -0.93),
+										new THREE.Vector3(-0.93, 0, -0.67),
+										new THREE.Vector3(-0.98, 0, -0.31) ]
 				},
 				left: {
 					left: new THREE.Vector3(0, 1, 0),
 					right: new THREE.Vector3(0, -1, 0),
-					'forward-left': new THREE.Vector3(0, 1, -1),
-					'forward-right': new THREE.Vector3(0, -1, -1)
+					'forward-left': [ new THREE.Vector3(0, 0.31, -0.98),
+										new THREE.Vector3(0, 0.67, -0.93),
+										new THREE.Vector3(0, 0.93, -0.67),
+										new THREE.Vector3(0, 0.98, -0.31) ],
+					'forward-right': [ new THREE.Vector3(0, -0.31, -0.98),
+										new THREE.Vector3(0, -0.67, -0.93),
+										new THREE.Vector3(0, -0.93, -0.67),
+										new THREE.Vector3(0, -0.98, -0.31) ]
 				}
 			};
 		};
 
 		var obstacleCollision = function(mesh, obstacles, ray, eventParam) {
-			var localRay= ray.clone();
-			localRay = localRay.applyMatrix4( mesh.matrix );
-			localRay = localRay.sub( mesh.position );
-
-			caster.set(mesh.position.clone(), ray.clone().normalize());
-			var collision = caster.intersectObjects(obstacles)[0];
-			if (collision && collision.distance <= ray.length()) {
-				!(collisions.indexOf(eventParam) + 1) && collisions.push(eventParam)
-				return true;
+			if (!(ray instanceof Array)) {
+				ray = [ray];
+			}
+			var collision = null;
+			for (var i in ray) {
+				caster.set(mesh.position.clone(), ray[i].clone().normalize());
+				collision = caster.intersectObjects(obstacles)[0];
+				if (collision && collision.distance <= ray[i].length()) {
+					!(collisions.indexOf(eventParam) + 1) && collisions.push(eventParam)
+					return true;
+				}
 			}
 			return false;
 		};
