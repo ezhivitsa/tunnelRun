@@ -163,9 +163,9 @@ define([
 				sign = sign[1] ? -1 : 1;
 
 				self.increaseZ = self.diff.get('speed') * delta * self.opts.moveDir.forward;
-				if ( self.opts.pos.z + increaseZ > POSITIONS[self.opts.lastPos].z  ) {
-					self.mesh.position.z += increaseZ;
-					self.opts.pos.z += increaseZ;
+				if ( self.opts.pos.z + self.increaseZ > POSITIONS[self.opts.lastPos].z  ) {
+					self.mesh.position.z += self.increaseZ;
+					self.opts.pos.z += self.increaseZ;
 				}
 				else {
 					self.mesh.position.z = self.opts.pos.z = POSITIONS[self.opts.lastPos].z;
