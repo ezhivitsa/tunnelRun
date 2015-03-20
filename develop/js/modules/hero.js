@@ -306,16 +306,26 @@ define([
 		};
 
 		Hero.prototype.setRestrictions = function (collisions) {
+			var restrictionsObject = {
+				'left': false,
+				'forward-left': false,
+				'forward': false,
+				'forward-right': false,
+				'right': false
+			};
+
 			for ( var i = 0; i < collisions.length; i++ ) {
-				if ( collisions[i].indexOf('forward') + 1 ) {
-					this.opts.moveDir.forward = 1;
-				}
-				if ( collisions[i].indexOf('left') + 1 ) {
-					this.opts.moveDir.left = -1;
-				}
-				if ( collisions[i].indexOf('right') + 1 ) {
-					this.opts.moveDir.right = 1;
-				}
+				restrictionsObject[collisions[i]] = true;
+			}
+
+			if ( restrictionsObject.left || restrictionsObject['forward-left'] ) {
+				this.opts.moveDir.left = -1;
+			}
+			if ( restrictionsObject.right || restrictionsObject['forward-right'] ) {
+				this.opts.moveDir.right = -1;
+			}
+			if ( restrictionsObject.forward || (restrictionsObject['forward-left'] && !restrictionsObject.left) || (restrictionsObject['forward-right'] && !restrictionsObject.right) ) {
+				this.opts.moveDir.forward = 1;
 			}
 		}
 
