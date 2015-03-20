@@ -45,11 +45,11 @@ define([
 			};
 		};
 
-		var obstacleCollision = function(position,obstacles,ray,eventParam) {
+		var obstacleCollision = function(position, obstacles, ray, eventParam) {
 			caster.set(position, ray);
 			var collision = caster.intersectObjects(obstacles)[0];
-			if (collision && collision.distance <= consts.hero.radius) {
-				!(collisions.indexOf(eventParam)+1) && collisions.push(eventParam)
+			if (collision && collision.distance <= ray.length()) {
+				!(collisions.indexOf(eventParam) + 1) && collisions.push(eventParam)
 				return true;
 			}
 			return false;
@@ -58,7 +58,7 @@ define([
 		Collision.prototype.currentPosition = function() {
 			caster.set(this.hero.mesh.position, this.rays.forward);
 
-			nextSegment =caster.intersectObjects(this.meshs)[0];
+			nextSegment = caster.intersectObjects(this.meshs)[0];
 			distance = nextSegment.distance;
 			currentSegmentPosition = this.meshs.indexOf(nextSegment.object) + 1;
 
@@ -66,6 +66,7 @@ define([
 		};
 
 		Collision.prototype.init = function(segments, diff, hero) {
+			var self = this;
 			this.segments = segments;
 			this.meshs = [];
 
@@ -77,6 +78,9 @@ define([
 				this.meshs.push(this.segments[i].mesh);
 			}
 
+			DataSource.addEvent(document, 'restart', function() {
+				self.updated = true;
+			});
 		};
 
 		Collision.prototype.getCurrentSegment = function(force) {
@@ -90,42 +94,43 @@ define([
 		};
 
 		Collision.prototype.segmentCollision = function() {
-			var borderX = this.meshs[currentSegmentPosition].position.x + consts.segmentSize.width/2,
-				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height/2,
+			var borderX = this.meshs[currentSegmentPosition].position.x + consts.segmentSize.width / 2,
+				borderY = this.meshs[currentSegmentPosition].position.y + consts.segmentSize.height / 2,
 				direction = null;
 
-			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius > borderX ) {
+			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius > borderX) {
 				direction = this.hero.mesh.position.x > 0 ? (this.hero.opts.lastPos == 'bottom' ? 'right' : 'left') : (this.hero.opts.lastPos == 'bottom' ? 'left' : 'right');
 				!collisions.indexOf(direction) && collisions.push(direction);
-			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius > borderY ) {
+			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius > borderY) {
 				fireEvent.direction = this.hero.mesh.position.y > 0 ? (this.hero.opts.lastPos == 'right' ? 'right' : 'left') : (this.hero.opts.lastPos == 'right' ? 'left' : 'right');
 				!collisions.indexOf(direction) && collisions.push(direction);
 			}
 		}
 
-		Collision.prototype.runCollision = function () {
+		Collision.prototype.runCollision = function() {
 			if (this.hero.opts.lastPos != this.hero.opts.nextPos) {
+				self.updated = true;
 				return;
 			}
-			obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays.forward,'forward');
+			obstacleCollision(this.hero.mesh.position, this.meshs[currentSegmentPosition].children, this.rays.forward, 'forward');
 
 			for (var key in this.rays[this.hero.opts.lastPos]) {
-				obstacleCollision(this.hero.mesh.position,this.meshs[currentSegmentPosition].children,this.rays[this.hero.opts.lastPos][key],key);
+				obstacleCollision(this.hero.mesh.position, this.meshs[currentSegmentPosition].children, this.rays[this.hero.opts.lastPos][key], key);
 			}
 
 			var obstacleIteration = 0;
-			switch(this.hero.opts.lastPos) {
+			switch (this.hero.opts.lastPos) {
 				case 'right':
 					obstacleIteration = consts.obstacleOptions.width - 1;
 					break;
-				case 'top': 
+				case 'top':
 					obstacleIteration = (consts.obstacleOptions.width - 1) * 2;
 					break;
 				case 'left':
 					obstacleIteration = (consts.obstacleOptions.width - 1) * 3;
 			}
 
-			if (this.segments[currentSegmentPosition].blockMatrix[obstacleIteration]==2) {
+			if (this.segments[currentSegmentPosition].blockMatrix[obstacleIteration] == 2) {
 				DataSource.triggerEvent(document, 'hero.abyss-die');
 			}
 
@@ -141,9 +146,10 @@ define([
 			var self = this;
 
 			DataSource.addAnimation(function(delta, now) {
+				collisions = [];
 				self.updated && self.currentPosition();
 
-				distance -= self.diff.get('speed') * delta;
+				distance -= self.diff.get('speed') * delta - self.hero.insreaseZ;
 				if (distance < 0.1) {
 					distance += consts.segmentSize.depth;
 					// for (var i = 0; i < 4; i++) {
@@ -165,7 +171,7 @@ define([
 					//fireEvent.direction = collisions;
 					//document.dispatchEvent(fireEvent);
 				}
-				collisions = [];
+				console.log(collisions)
 			});
 		};
 

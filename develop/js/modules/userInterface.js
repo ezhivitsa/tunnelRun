@@ -16,11 +16,28 @@ define([
 
 			this.gameStatus = document.querySelector('#game-text');
 
+			this.gameScoreField = document.querySelector('#score');
+			this.gameScore = 0;
+
 			this.eventControl('on');
+			this.update();
 		}
 
-		Interface.prototype.eventControl = function(action) {
+		Interface.prototype.update = function() {
+			var self = this,
+				myUpdate = 0;
 
+			DataSource.addAnimation(function(delta, now) {
+				myUpdate++;
+				if (myUpdate == 20) {
+					self.gameScore += self.diff.get('speed');
+					self.gameScoreField.innerHTML = Math.round(self.gameScore * 10) / 10;
+					myUpdate = 0;
+				}
+			});
+		};
+
+		Interface.prototype.eventControl = function(action) {
 			var self = this;
 
 			if (action === 'on') {
@@ -42,13 +59,15 @@ define([
 					} else {
 						self.gameStatus.innerHTML = consts.statusText.restart;
 						self.diff.init();
-						DataSource.triggerEvent(document, 'restart', { diff: self.diff });
+						DataSource.triggerEvent(document, 'restart', {
+							diff: self.diff
+						});
 						DataSource.paused() && DataSource.startAnimation();
 						self.gameStatus.innerHTML = consts.statusText.onGame;
 					}
+					self.gameScore = 0;
 				},
 				pause: function(e) {
-
 					if (e.which != 32) {
 						return;
 					}
@@ -70,9 +89,7 @@ define([
 			};
 
 			DataSource
-				[action](this.button, 'click', this.events.startRestart)
-				[action](document, 'keydown', this.events.pause)
-				[action](document, ':game-end', this.events.end);
+				[action](this.button, 'click', this.events.startRestart)[action](document, 'keydown', this.events.pause)[action](document, ':game-end', this.events.end);
 		};
 
 		return Interface;

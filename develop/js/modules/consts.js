@@ -57,7 +57,7 @@ define([
 				depth: 2,
 				changePositionSpeed: 1,
 				movePerFrame: 0.1,
-				resumeZSpeed: -0.01,
+				resumeZSpeed: -0.3,
 				minZPos: 0.1
 			},
 
