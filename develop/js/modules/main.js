@@ -56,7 +56,6 @@ define([
 			collision.init(scene.getSegments(),diff,hero);
 
 			scene.animate();
-			hero.animate();
 			diff.update();
 
 			collision.update();			

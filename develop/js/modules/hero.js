@@ -150,21 +150,6 @@ define([
 			this.mesh.position.z = this.opts.pos.z;
 		};
 
-		Hero.prototype.animate = function() {
-			var self = this;
-
-			DataSource.addAnimation(function(delta, now) {
-				(function(rot) {
-					var sign = rot.match(signRegExp),
-						dim = sign[2];
-
-					sign = sign[1] ? -1 : 1;
-					self.opts.rot += self.diff.get('speed') * delta / consts.hero.radius;
-					self.mesh.rotation[dim] = self.opts.rot * sign;
-				})(self.opts.pos.moveDim);
-			});
-		};
-
 		Hero.prototype.move = function () {
 			var self = this;
 
@@ -177,18 +162,23 @@ define([
 
 				sign = sign[1] ? -1 : 1;
 
-				var insreaseZ = self.diff.get('speed') * delta * self.opts.moveDir.forward;
-				if ( self.opts.pos.z + insreaseZ > POSITIONS[self.opts.lastPos].z  ) {
-					self.mesh.position.z += insreaseZ;
-					self.opts.pos.z += insreaseZ;
+				var increaseZ = self.diff.get('speed') * delta * self.opts.moveDir.forward;
+				if ( self.opts.pos.z + increaseZ > POSITIONS[self.opts.lastPos].z  ) {
+					self.mesh.position.z += increaseZ;
+					self.opts.pos.z += increaseZ;
 				}
 				else {
+					// insreaseZ = 0;
 					self.mesh.position.z = self.opts.pos.z = POSITIONS[self.opts.lastPos].z;
 				}
 
 				if ( self.opts.pos.z > consts.hero.minZPos ) {
 					DataSource.triggerEvent(document, ':game-end');
 				}
+
+				// console.log(increaseZ)
+				self.opts.rot += (self.diff.get('speed') * delta + increaseZ) / consts.hero.radius;
+				self.mesh.rotation[dim] = self.opts.rot * sign;
 
 				if ( !self.opts.move ) {
 					return;
@@ -204,7 +194,6 @@ define([
 					self.mesh.rotation.z += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
 					self.mesh.position[dim] += currentChange * sign * (self.opts.move + self.opts.moveDir.left + self.opts.moveDir.right);
 				}
-
 			});
 		};
 
