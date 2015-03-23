@@ -78,7 +78,9 @@ define([
 				caster.set(mesh.position.clone(), ray[i].clone().normalize());
 				collision = caster.intersectObjects(obstacles)[0];
 				if (collision && collision.distance <= ray[i].length()) {
-					!(collisions.indexOf(eventParam) + 1) && collisions.push(eventParam)
+					!(collisions.filter(function(element) {
+						return element.name === eventParam;
+					}).length) && collisions.push({ name: eventParam, dsitance: consts.hero.radius - Math.abs(ray[i].x ? ray[i].x : ray[i].y) });
 					return true;
 				}
 			}
@@ -130,10 +132,14 @@ define([
 
 			if (Math.abs(this.hero.mesh.position.x) + consts.hero.radius > borderX) {
 				direction = this.hero.mesh.position.x > 0 ? (this.hero.opts.lastPos == 'bottom' ? 'right' : 'left') : (this.hero.opts.lastPos == 'bottom' ? 'left' : 'right');
-				!collisions.indexOf(direction) && collisions.push(direction);
+				!(collisions.filter(function(element) {
+						return element.name === direction;
+					}).length) && collisions.push({ name: direction, distance: 0 });
 			} else if (Math.abs(this.hero.mesh.position.y) + consts.hero.radius > borderY) {
 				fireEvent.direction = this.hero.mesh.position.y > 0 ? (this.hero.opts.lastPos == 'right' ? 'right' : 'left') : (this.hero.opts.lastPos == 'right' ? 'left' : 'right');
-				!collisions.indexOf(direction) && collisions.push(direction);
+				!(collisions.filter(function(element) {
+						return element.name === direction;
+					}).length) && collisions.push({ name: direction, distance: 0 });
 			}
 		}
 
@@ -201,6 +207,7 @@ define([
 					//fireEvent.direction = collisions;
 					//document.dispatchEvent(fireEvent);
 				}
+				console.log(collisions)
 			});
 		};
 
