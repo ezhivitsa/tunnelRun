@@ -116,9 +116,6 @@ define([
 							// set new position
 							self.opts.nextPos = position;
 
-							// need to check blocks on the new position
-							self.checkBlocks();
-
 							// start movement to the new position
 							self.updatePosition();
 						}
@@ -203,22 +200,13 @@ define([
 			});
 		};
 
-		Hero.prototype.checkBlocks = function () {
-			var newCoords = POSITIONS[this.opts.nextPos];
+		Hero.prototype.moveByZ = function (newSystCoord) {
+			var distance = Math.sqrt(Math.pow(newSystCoord.x, 2) + Math.pow(newSystCoord.y, 2));
 
-			var  newSystCoord = {
-				x: newCoords.x - this.opts.pos.x,
-				y: newCoords.y - this.opts.pos.y
-			};
-
-			var ray = new THREE.Vector3(0, newSystCoord.x, newSystCoord.y);
-
-			var currPos = {
-				x: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow(newSystCoord.y / newSystCoord.x, 2)),
-				y: consts.hero.changePositionSpeed / Math.sqrt(1 + Math.pow(newSystCoord.x / newSystCoord.y, 2))
-			};
-
-			console.log(newSystCoord, currPos)
+			if ( distance < consts.hero.radius * 1.01 ) {
+				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0);
+			}
+			//console.log(distance);
 		};
 
 		Hero.prototype.updatePosition = function () {
@@ -261,6 +249,8 @@ define([
 							self.opts.pos.y -= currPos.y;
 						}
 					}
+					
+					self.moveByZ(newSystCoord);
 
 					// fire custom event of change position of the hero
 					DataSource.triggerEvent(document, ':hero-position', { 
@@ -322,7 +312,7 @@ define([
 				this.opts.moveDir.left = -1;
 			}
 			if ( restrictionsObject.right || restrictionsObject['forward-right'] ) {
-				this.opts.moveDir.right = -1;
+				this.opts.moveDir.right = 1;
 			}
 			if ( restrictionsObject.forward || (restrictionsObject['forward-left'] && !restrictionsObject.left) || (restrictionsObject['forward-right'] && !restrictionsObject.right) ) {
 				this.opts.moveDir.forward = 1;

@@ -19,8 +19,12 @@ define([
 			this.rays = {
 				forward: new THREE.Vector3(0, 0, -1),
 				bottom: {
-					right: new THREE.Vector3(1, 0, 0),
-					left: new THREE.Vector3(-1, 0, 0),
+					right: [ new THREE.Vector3(1, 0, 0),
+							new THREE.Vector3(0.93, 0, 0.67),
+							new THREE.Vector3(0.98, 0, 0.31) ],
+					left: [ new THREE.Vector3(-1, 0, 0),
+							new THREE.Vector3(-0.93, 0, 0.67),
+							new THREE.Vector3(-0.98, 0, 0.31) ],
 					'forward-right': [ new THREE.Vector3(0.31, 0, -0.98),
 										new THREE.Vector3(0.67, 0, -0.93),
 										new THREE.Vector3(0.93, 0, -0.67),
@@ -31,8 +35,12 @@ define([
 										new THREE.Vector3(-0.98, 0, -0.31) ]
 				},
 				right: {
-					right: new THREE.Vector3(0, 1, 0),
-					left: new THREE.Vector3(0, -1, 0),
+					right: [ new THREE.Vector3(0, 1, 0),
+							new THREE.Vector3(0, 0.93, 0.67),
+							new THREE.Vector3(0, 0.98, 0.31) ],
+					left: [ new THREE.Vector3(0, -1, 0),
+							new THREE.Vector3(0, -0.93, 0.67),
+							new THREE.Vector3(0, -0.98, 0.31)],
 					'forward-right': [ new THREE.Vector3(0, 0.31, -0.98),
 										new THREE.Vector3(0, 0.67, -0.93),
 										new THREE.Vector3(0, 0.93, -0.67),
@@ -43,8 +51,12 @@ define([
 										new THREE.Vector3(0, -0.98, -0.31) ]
 				},
 				top: {
-					left: new THREE.Vector3(1, 0, 0),
-					right: new THREE.Vector3(-1, 0, 0),
+					left: [ new THREE.Vector3(1, 0, 0),
+							new THREE.Vector3(0.93, 0, 0.67),
+							new THREE.Vector3(0.98, 0, 0.31) ],
+					right: [ new THREE.Vector3(-1, 0, 0),
+							new THREE.Vector3(-0.93, 0, 0.67),
+							new THREE.Vector3(-0.98, 0, 0.31) ],
 					'forward-left': [ new THREE.Vector3(0.31, 0, -0.98),
 										new THREE.Vector3(0.67, 0, -0.93),
 										new THREE.Vector3(0.93, 0, -0.67),
@@ -55,8 +67,12 @@ define([
 										new THREE.Vector3(-0.98, 0, -0.31) ]
 				},
 				left: {
-					left: new THREE.Vector3(0, 1, 0),
-					right: new THREE.Vector3(0, -1, 0),
+					left: [ new THREE.Vector3(0, 1, 0),
+							new THREE.Vector3(0, 0.93, 0.67),
+							new THREE.Vector3(0, 0.98, 0.31) ],
+					right: [ new THREE.Vector3(0, -1, 0),
+							new THREE.Vector3(0, -0.93, 0.67),
+							new THREE.Vector3(0, -0.98, 0.31)],
 					'forward-left': [ new THREE.Vector3(0, 0.31, -0.98),
 										new THREE.Vector3(0, 0.67, -0.93),
 										new THREE.Vector3(0, 0.93, -0.67),
