@@ -305,7 +305,7 @@ define([
 			};
 
 			for ( var i = 0; i < collisions.length; i++ ) {
-				restrictionsObject[collisions[i]] = true;
+				restrictionsObject[collisions[i].name] = collisions[i];
 			}
 
 			if ( restrictionsObject.left || restrictionsObject['forward-left'] ) {
@@ -317,6 +317,9 @@ define([
 			if ( restrictionsObject.forward || (restrictionsObject['forward-left'] && !restrictionsObject.left) || (restrictionsObject['forward-right'] && !restrictionsObject.right) ) {
 				this.opts.moveDir.forward = 1;
 			}
+
+			// help for gamer
+			if ( restrictionsObject['forward-left'] && restrictionsObject['forward-left'].distance < 0.001 )
 		}
 
 		return Hero;

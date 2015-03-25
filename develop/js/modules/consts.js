@@ -58,7 +58,8 @@ define([
 				changePositionSpeed: 1,
 				movePerFrame: 0.1,
 				resumeZSpeed: -0.3,
-				minZPos: 0.1
+				minZPos: 0.1//,
+
 			},
 
 			figureOptions: {

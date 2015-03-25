@@ -96,7 +96,7 @@ define([
 				if (collision && collision.distance <= ray[i].length()) {
 					!(collisions.filter(function(element) {
 						return element.name === eventParam;
-					}).length) && collisions.push({ name: eventParam, dsitance: consts.hero.radius - Math.abs(ray[i].x ? ray[i].x : ray[i].y) });
+					}).length) && collisions.push({ name: eventParam, distance: consts.hero.radius - Math.abs(ray[i].x ? ray[i].x : ray[i].y) });
 					return true;
 				}
 			}
