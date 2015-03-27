@@ -223,7 +223,6 @@ define([
 					//fireEvent.direction = collisions;
 					//document.dispatchEvent(fireEvent);
 				}
-				console.log(collisions)
 			});
 		};
 

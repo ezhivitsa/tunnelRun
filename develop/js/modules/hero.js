@@ -74,14 +74,14 @@ define([
 				moveDir: {
 					forward: 0,
 					left: 0,
-					right: 0
+					right: 0,
+					error: 0
 				}
 			};
 
 			this.init(diff);
 
 			this.eventControl('on');
-			this.move();
 		}
 
 		Hero.prototype.init = function(obj) {
@@ -161,7 +161,7 @@ define([
 
 			DataSource.addAnimation(function anim (delta) {
 				var sign = self.opts.pos.moveDim.match(signRegExp),
-					currentChange = consts.hero.movePerFrame * delta,
+					currentChange = consts.hero.movePerFrame * delta * !!self.opts.move + self.opts.moveDir.error * !self.opts.move,
 					dim = sign[2];
 
 				sign = sign[1] ? -1 : 1;
@@ -180,12 +180,12 @@ define([
 					DataSource.triggerEvent(document, ':game-end');
 				}
 
-				self.opts.rot += (self.diff.get('speed') * delta - self.increaseZ) / consts.hero.radius;
-				self.mesh.rotation[dim] = self.opts.rot * sign;
-
 				if ( !self.opts.move ) {
 					return;
 				}
+
+				self.opts.rot += (self.diff.get('speed') * delta - self.increaseZ) / consts.hero.radius;
+				self.mesh.rotation[dim] = self.opts.rot * sign;
 
 				if ( Math.abs(self.opts.pos[dim] + currentChange * sign * self.opts.move) > maxMove ) {
 					self.opts.pos[dim] = maxMove * sign * self.opts.move;
@@ -206,7 +206,6 @@ define([
 			if ( distance < consts.hero.radius * 1.01 ) {
 				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0);
 			}
-			//console.log(distance);
 		};
 
 		Hero.prototype.updatePosition = function () {
@@ -318,8 +317,19 @@ define([
 				this.opts.moveDir.forward = 1;
 			}
 
+			this.opts.moveDir.error = 0;
+
 			// help for gamer
-			if ( restrictionsObject['forward-left'] && restrictionsObject['forward-left'].distance < 0.001 )
+			if ( restrictionsObject['forward-left'] && !restrictionsObject['forward-right'] && !restrictionsObject['right'] && restrictionsObject['forward-left'].distance && restrictionsObject['forward-left'].distance < consts.hero.collisionError ) {
+				// move hero to the right on collision length
+				this.opts.moveDir.error = restrictionsObject['forward-left'].distance;
+			}
+			if ( restrictionsObject['forward-right'] && !restrictionsObject['forward-left'] && !restrictionsObject['left'] && restrictionsObject['forward-right'].distance && restrictionsObject['forward-right'].distance < consts.hero.collisionError ) {
+				// move hero to the right on collision length
+				this.opts.moveDir.error = restrictionsObject['forward-right'].distance;
+			}
+
+			console.log(this.opts.moveDir.error)
 		}
 
 		return Hero;

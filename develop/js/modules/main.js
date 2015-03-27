@@ -58,6 +58,7 @@ define([
 			scene.animate();
 			diff.update();
 
+			hero.move();
 			collision.update();
 		};
 	}
