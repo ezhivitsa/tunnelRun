@@ -59,7 +59,7 @@ define([
 				movePerFrame: 0.1,
 				resumeZSpeed: -0.3,
 				minZPos: 0.1,
-				collisionError: 0.5
+				collisionError: 0.33
 			},
 
 			figureOptions: {

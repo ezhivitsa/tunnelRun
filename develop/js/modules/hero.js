@@ -57,7 +57,7 @@ define([
 
 		var signRegExp = /(-?)(\w+)/;
 
-		function Hero(diff) {
+		function Hero(options) {
 			this.geometry = new THREE.SphereGeometry(consts.hero.radius, consts.hero.widthSegments, consts.hero.heightSegments);
 			this.material = new THREE.MeshLambertMaterial({
 				color: 0xffff00,
@@ -79,7 +79,7 @@ define([
 				}
 			};
 
-			this.init(diff);
+			this.init(options);
 
 			this.eventControl('on');
 		}
@@ -180,7 +180,7 @@ define([
 					DataSource.triggerEvent(document, ':game-end');
 				}
 
-				if ( !self.opts.move ) {
+				if ( self.opts.lastPos !== self.opts.nextPos ) {
 					return;
 				}
 
@@ -203,8 +203,22 @@ define([
 		Hero.prototype.moveByZ = function (newSystCoord) {
 			var distance = Math.sqrt(Math.pow(newSystCoord.x, 2) + Math.pow(newSystCoord.y, 2));
 
-			if ( distance < consts.hero.radius * 1.01 ) {
+			if ( distance < 2 * consts.hero.radius * 1.01 ) {
 				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0);
+				var heroCollisions = this.collision.runCollisionWhenChangePosition(ray);
+
+				if ( heroCollisions[0] && !heroCollisions[1] ) {
+					// increase z position on length that less then radius
+				}
+				else if ( heroCollisions[0] && heroCollisions[1] ) {
+					// increase z position on length that more then radius
+				}
+				else if ( heroCollisions[1] && heroCollisions[2] ) {
+					// reduce z position on length that more then radius
+				}
+				else if ( heroCollisions[1] && !heroCollisions[2] ) {
+					// reduce z position on length that less then radius
+				}
 			}
 		};
 
@@ -328,8 +342,6 @@ define([
 				// move hero to the right on collision length
 				this.opts.moveDir.error = restrictionsObject['forward-right'].distance;
 			}
-
-			console.log(this.opts.moveDir.error)
 		}
 
 		return Hero;

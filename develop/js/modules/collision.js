@@ -185,7 +185,27 @@ define([
 			if (this.segments[currentSegmentPosition].blockMatrix[obstacleIteration] == 2) {
 				DataSource.triggerEvent(document, 'hero.abyss-die');
 			}
+		};
 
+		Collision.prototype.runCollisionWhenChangePosition = function (ray) {
+			var positions = [this.hero.mesh.position.clone(), this.hero.mesh.position.clone(), this.hero.mesh.position.clone()],
+				heroCollisions = [],
+				collision = null;
+
+			positions[0].z -= consts.hero.radius;
+			positions[2].z += consts.hero.radius;
+			
+			positions.forEach(function (pos, index) {
+				caster.set(pos, ray.clone().normalize());
+				collision = caster.intersectObjects(this.meshs[currentSegmentPosition].children)[0];
+
+				if (collision && collision.distance <= ray.length()) {
+					debugger
+					heroCollisions[index] = true;
+				}
+			}, this);
+
+			return heroCollisions;
 		};
 
 		Collision.prototype.abyssDetector = function() {
