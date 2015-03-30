@@ -190,7 +190,8 @@ define([
 		Collision.prototype.runCollisionWhenChangePosition = function (ray) {
 			var positions = [this.hero.mesh.position.clone(), this.hero.mesh.position.clone(), this.hero.mesh.position.clone()],
 				heroCollisions = [],
-				collision = null;
+				collision = null,
+				intersectObject = null;
 
 			positions[0].z -= consts.hero.radius;
 			positions[2].z += consts.hero.radius;
@@ -200,12 +201,16 @@ define([
 				collision = caster.intersectObjects(this.meshs[currentSegmentPosition].children)[0];
 
 				if (collision && collision.distance <= ray.length()) {
-					debugger
+					// debugger;
 					heroCollisions[index] = true;
+					intersectObject = collision.object;
 				}
 			}, this);
 
-			return heroCollisions;
+			return {
+				heroCollision: heroCollisions,
+				intersectObject: intersectObject
+			};
 		};
 
 		Collision.prototype.abyssDetector = function() {

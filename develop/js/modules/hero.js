@@ -200,12 +200,17 @@ define([
 			});
 		};
 
-		Hero.prototype.moveByZ = function (newSystCoord) {
+		Hero.prototype.moveByZ = function (newSystCoord, delta) {
 			var distance = Math.sqrt(Math.pow(newSystCoord.x, 2) + Math.pow(newSystCoord.y, 2));
 
-			if ( distance < 2 * consts.hero.radius * 1.01 ) {
-				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0);
-				var heroCollisions = this.collision.runCollisionWhenChangePosition(ray);
+			if ( distance < 2 * consts.hero.radius * 2 ) {
+				var approximateDisplacement = (distance - consts.hero.radius - consts.figureOptions.pointLength/2) * this.diff.get('speed') * delta / consts.hero.changePositionSpeed;
+				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0)
+					collisionResult = this.collision.runCollisionWhenChangePosition(ray);
+
+				var heroCollisions = collisionResult.heroCollisions,
+					object = collisionResult.intersectObject,
+					segment = object.parent;
 
 				if ( heroCollisions[0] && !heroCollisions[1] ) {
 					// increase z position on length that less then radius
@@ -224,7 +229,7 @@ define([
 
 		Hero.prototype.updatePosition = function () {
 			var self = this;
-			DataSource.addAnimation(function anim() {
+			DataSource.addAnimation(function anim(delta) {
 				var newCoords = POSITIONS[self.opts.nextPos];
 
 				if ( self.opts.pos.x !== newCoords.x || self.opts.pos.y !== newCoords.y ) {
@@ -263,7 +268,7 @@ define([
 						}
 					}
 					
-					self.moveByZ(newSystCoord);
+					self.moveByZ(newSystCoord, delta);
 
 					// fire custom event of change position of the hero
 					DataSource.triggerEvent(document, ':hero-position', { 
