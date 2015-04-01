@@ -204,25 +204,45 @@ define([
 			var distance = Math.sqrt(Math.pow(newSystCoord.x, 2) + Math.pow(newSystCoord.y, 2));
 
 			if ( distance < 2 * consts.hero.radius * 2 ) {
-				var approximateDisplacement = (distance - consts.hero.radius - consts.figureOptions.pointLength/2) * this.diff.get('speed') * delta / consts.hero.changePositionSpeed;
-				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0)
-					collisionResult = this.collision.runCollisionWhenChangePosition(ray);
+				var heroObjDistance = distance - consts.hero.radius - consts.figureOptions.pointLength/2, // potential distance between hero and object
+					steps = heroObjDistance / consts.hero.changePositionSpeed,
+					approximateDisplacement = (heroObjDistance < consts.hero.changePositionSpeed) ? 0 : steps * this.diff.get('speed') * delta;
+
+				var ray = new THREE.Vector3(newSystCoord.x, newSystCoord.y, 0),
+					collisionResult = this.collision.runCollisionWhenChangePosition(ray, approximateDisplacement);
 
 				var heroCollisions = collisionResult.heroCollisions,
 					object = collisionResult.intersectObject,
-					segment = object.parent;
+					segment = object ? object.parent : null;
 
-				if ( heroCollisions[0] && !heroCollisions[1] ) {
-					// increase z position on length that less then radius
+				if ( !object ) {
+					return;
 				}
-				else if ( heroCollisions[0] && heroCollisions[1] ) {
-					// increase z position on length that more then radius
+
+				var objectCenter = segment.position.z + object.position.z,
+					changeDistance = consts.figureOptions.pointLength + consts.hero.radius - Math.abs(objectCenter + approximateDisplacement - this.opts.pos.z);
+
+				if ( heroObjDistance < consts.hero.changePositionSpeed ) {
+					if ( !heroCollisions[1] && heroCollisions[2] ) {
+						// move hero forward
+					}
+					else if ( heroCollisions[0] || heroCollisions[1] ) {
+						// move hero back
+						this.mesh.position.z = objectCenter + consts.figureOptions.pointLength + consts.hero.radius;
+						this.opts.pos.z = objectCenter + consts.figureOptions.pointLength + consts.hero.radius;
+					}
 				}
-				else if ( heroCollisions[1] && heroCollisions[2] ) {
-					// reduce z position on length that more then radius
-				}
-				else if ( heroCollisions[1] && !heroCollisions[2] ) {
-					// reduce z position on length that less then radius
+				else {
+					if ( !heroCollisions[1] && heroCollisions[2] ) {
+						// move hero forward
+						this.mesh.position.z -= changeDistance / steps;
+						this.opts.pos.z -= changeDistance / steps;
+					}
+					else if ( heroCollisions[0] || heroCollisions[1] ) {
+						// move hero back
+						this.mesh.position.z += changeDistance / steps;
+						this.opts.pos.z += changeDistance / steps;
+					}
 				}
 			}
 		};
