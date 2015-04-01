@@ -109,7 +109,7 @@ define([
 			nextSegment = caster.intersectObjects(this.meshs)[0];
 			distance = nextSegment.distance;
 			currentSegmentPosition = this.meshs.indexOf(nextSegment.object) + 1;
-
+			console.log('runed collision')
 			this.updated = false;
 		};
 
@@ -161,7 +161,7 @@ define([
 
 		Collision.prototype.runCollision = function() {
 			if (this.hero.opts.lastPos != this.hero.opts.nextPos) {
-				self.updated = true;
+				this.updated = true;
 				return;
 			}
 			obstacleCollision(this.hero.mesh, this.meshs[currentSegmentPosition].children, this.rays.forward, 'forward');
