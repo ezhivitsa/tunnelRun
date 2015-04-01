@@ -109,7 +109,6 @@ define([
 			nextSegment = caster.intersectObjects(this.meshs)[0];
 			distance = nextSegment.distance;
 			currentSegmentPosition = this.meshs.indexOf(nextSegment.object) + 1;
-			console.log('runed collision')
 			this.updated = false;
 		};
 
