@@ -203,7 +203,7 @@ define([
 		Hero.prototype.moveByZ = function (newSystCoord, delta) {
 			var distance = Math.sqrt(Math.pow(newSystCoord.x, 2) + Math.pow(newSystCoord.y, 2));
 
-			if ( distance < 2 * consts.hero.radius * 2 ) {
+			if ( distance < 2 * consts.hero.radius * 4 ) {
 				var heroObjDistance = distance - consts.hero.radius - consts.figureOptions.pointLength/2, // potential distance between hero and object
 					steps = heroObjDistance / consts.hero.changePositionSpeed,
 					approximateDisplacement = (heroObjDistance < consts.hero.changePositionSpeed) ? 0 : steps * this.diff.get('speed') * delta;
@@ -225,6 +225,8 @@ define([
 				if ( heroObjDistance < consts.hero.changePositionSpeed ) {
 					if ( !heroCollisions[1] && heroCollisions[2] ) {
 						// move hero forward
+						this.mesh.position.z = objectCenter + consts.figureOptions.pointLength + consts.hero.radius;
+						this.opts.pos.z = objectCenter + consts.figureOptions.pointLength + consts.hero.radius;
 					}
 					else if ( heroCollisions[0] || heroCollisions[1] ) {
 						// move hero back
