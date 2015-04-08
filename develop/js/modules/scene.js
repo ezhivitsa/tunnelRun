@@ -29,7 +29,7 @@ define([
 			this.camera.position.y = 2;
 
 			// Init controls
-			this.controls = new THREE.TrackballControls(this.camera);
+			this.controls = new THREE.TrackballControls(this.camera,this.canvasElement);
 
 			this.ambientLight = new THREE.AmbientLight(0x202020);
 			this.spotLight = new THREE.SpotLight(0xffffff);

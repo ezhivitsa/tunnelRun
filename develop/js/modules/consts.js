@@ -15,7 +15,8 @@ define([
 				onGame: 'Your are playing',
 				pause: 'Game Paused',
 				restart: 'Game Restarted',
-				loss: 'Bad luck'
+				loss: 'Bad luck',
+				badInput: 'Enter valid text'
 			},
 
 			theme: {

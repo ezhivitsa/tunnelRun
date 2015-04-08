@@ -9,22 +9,19 @@
 <body>
 	
 	<div class="game-field">
-		<div id="WebGLCanvas">
-			
+		<div id="WebGLCanvas" class="started">
+			<table id="score-table" style="display: none"></table>
 		</div>
 		<div class="more-game">
 			<h3 id="game-text">Press Play to start</h3>
 			<div id="score">0</div>
 			<div class="game-controls">
 				<a id="paly-restart-btn" href="#">Play</a>
-				<!-- <div class="theme-container">
-					<label for="#theme">Theme</label>
-					<select id="theme" name="theme">
-						<option value="magma" selected>magma</option>
-						<option value="ice">ice</option>
-						<option value="ice2">ice2</option>
-					</select>
-				</div> -->
+				<div class="theme-container" style="display: none">
+					<label for="#theme">Enter player name</label>
+					<input type="text" name="player-name">
+					<button id="save">Save score</button>
+				</div>
 			</div>
 			<div class="game-info">
 				Press: 
