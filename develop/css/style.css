@@ -19,7 +19,7 @@ body
     font-size: 0;
 
     width: 1324px;
-    height: 768px;
+    height: 630px;
     margin: 0 auto;
 
     background: #711e12;
@@ -38,7 +38,7 @@ body
 #WebGLCanvas.started:before
 {
     font-size: 40px;
-    line-height: 768px;
+    line-height: 630px;
 
     position: absolute;
     z-index: 1;
@@ -138,8 +138,7 @@ body
 .game-info
 {
     font-size: 15px;
-
-    height: 465px;
+    
     padding-left: 20px;
 }
 

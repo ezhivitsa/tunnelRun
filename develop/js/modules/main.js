@@ -22,7 +22,7 @@ define([
 
 			var pageSize = {
 					width: 1024,
-					height: 768
+					height: 630
 				},
 				segmentOptions = {
 					width: 24,
