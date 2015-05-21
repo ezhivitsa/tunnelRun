@@ -6,13 +6,13 @@ Game on three.js
 Version
 ----
 
-0.0.0
+1.0.0
 
 Installation
 --------------
 
 1. Install node.js from WEB
-2. INstall bower using command line
+2. Install bower using command line
 ```sh
 $ npm install -g bower
 ```
